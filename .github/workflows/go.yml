@@ -23,6 +23,17 @@ jobs:
       with:
        # Bazel version to install e.g. 1.2.1, 2.0.0, ...
        version: 2.0.0 # optional, default is 2.0.0
+       
+    - name: Clone TensorFlow
+      uses: actions/checkout@master
+      with:
+       name: tensorflow/tensorflow    
+       ref: refs/heads/release
+       
+    - name: run Bazel command
+      uses: ngalaiko/bazel-action/2.0.0@master
+      with:
+        args: build -c opt //tensorflow/lite/c:tensorflowlite_c
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
