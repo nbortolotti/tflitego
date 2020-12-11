@@ -25,10 +25,9 @@ jobs:
        version: 2.0.0 # optional, default is 2.0.0
        
     - name: Clone TensorFlow
-      uses: actions/checkout@master
+      uses: actions/checkout@v2
       with:
-       name: tensorflow/tensorflow    
-       ref: refs/heads/release
+       name: tensorflow/tensorflow
        
     - name: run Bazel command
       uses: ngalaiko/bazel-action/2.0.0@master
