@@ -25,18 +25,11 @@ jobs:
        version: 2.0.0 # optional, default is 2.0.0
        
     - name: Clone TF
-      run: git clone https://github.com/tensorflow/tensorflow.git
+      run: |
+        git clone https://github.com/tensorflow/tensorflow.git
+        cd tensorflow
+        bazel build -c opt //tensorflow/lite/c:tensorflowlite_c
        
-    - name: workspace bazel
-      run: touch WORKSPACE
-       
-    - name: run Bazel command
-      uses: ngalaiko/bazel-action/2.0.0@master
-      with:
-        args: build -c opt //tensorflow/tensorflow/lite/c:tensorflowlite_c
-
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v2
 
     - name: Get dependencies
       run: |
