@@ -33,7 +33,7 @@ jobs:
     - name: run Bazel command
       uses: ngalaiko/bazel-action/2.0.0@master
       with:
-        args: build -c opt //tensorflow/lite/c:tensorflowlite_c
+        args: build -c opt //tensorflow/tensorflow/lite/c:tensorflowlite_c
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
