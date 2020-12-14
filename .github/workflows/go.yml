@@ -29,6 +29,9 @@ jobs:
       with:
        name: tensorflow/tensorflow
        
+    - name: workspace bazel
+      run: touch WORKSPACE
+       
     - name: run Bazel command
       uses: ngalaiko/bazel-action/2.0.0@master
       with:
