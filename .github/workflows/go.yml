@@ -27,16 +27,13 @@ jobs:
     - name: Clone TF
       run: |
         git clone https://github.com/tensorflow/tensorflow.git
-        
-    - name: Directory
-      run: |
-        cd tensorflow
   
     - name: workspace bazel
       run: touch WORKSPACE
 
     - name: Bazel build
       run: |
+        cd tensorflow
         bazel build -c opt //tensorflow/lite/c:tensorflowlite_c
 
     - name: Get dependencies
