@@ -24,10 +24,8 @@ jobs:
        # Bazel version to install e.g. 1.2.1, 2.0.0, ...
        version: 2.0.0 # optional, default is 2.0.0
        
-    - name: Clone TensorFlow
-      uses: actions/checkout@v2
-      with:
-       name: tensorflow/tensorflow
+    - name: Clone TF
+      run: git clone https://github.com/tensorflow/tensorflow.git
        
     - name: workspace bazel
       run: touch WORKSPACE
