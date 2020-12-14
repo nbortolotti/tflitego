@@ -38,9 +38,7 @@ jobs:
       run: touch WORKSPACE
 
     - name: Bazel build
-      run: |
-        cd tensorflow
-        bazel build -c opt //tensorflow/lite/c:tensorflowlite_c
+      run: bazel build -c opt //tensorflow/lite/c:tensorflowlite_c
 
     - name: Get dependencies
       run: |
