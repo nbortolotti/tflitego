@@ -27,6 +27,9 @@ jobs:
     - name: Clone TF
       run: |
         git clone https://github.com/tensorflow/tensorflow.git
+        
+    - name: install numpy
+      run: pip install numpy
   
     - name: workspace bazel
       run: touch WORKSPACE
