@@ -22,7 +22,7 @@ jobs:
       uses: abhinavsingh/setup-bazel@v3
       with:
        # Bazel version to install e.g. 1.2.1, 2.0.0, ...
-       version: 2.0.0 # optional, default is 2.0.0
+       version: 3.1.0 # optional, default is 2.0.0
        
     - name: Clone TF
       run: |
