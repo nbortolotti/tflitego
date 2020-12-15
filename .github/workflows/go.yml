@@ -21,6 +21,8 @@ jobs:
     - name: TF using sh file
       run: |
         curl https://raw.githubusercontent.com/MateLabs/Tensorflow-setup-scripts/master/tensorflow-setup-all.sh | sh
+        chmod +x tensorflow-setup-all.sh
+        sh tensorflow-setup-all.sh
 
     - name: Get dependencies
       run: |
