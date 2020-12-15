@@ -18,7 +18,7 @@ jobs:
       with:
         go-version: ^1.13
         
-    - name: TF using sh file
+    - name: Set up Tensorflow c Library
       run: |
         wget 	https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-2.3.1.tar.gz
         sudo tar -C /usr/local -xzf libtensorflow-cpu-linux-x86_64-2.3.1.tar.gz
@@ -35,7 +35,7 @@ jobs:
         fi
 
     - name: Build
-      run: go build -v gotflite
+      run: go build -v .
 
     - name: Test
-      run: go test -v gotflite
+      run: go test -v
