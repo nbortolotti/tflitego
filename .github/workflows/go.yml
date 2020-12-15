@@ -38,8 +38,11 @@ jobs:
     - name: workspace bazel
       run: touch WORKSPACE
 
-    - name: Bazel build
-      run: bazel build -c opt //tensorflow/lite/c:tensorflowlite_c
+    - name: run Bazel command
+      uses: ngalaiko/bazel-action/3.1.0@master
+      with:
+        working_dir: tensorflow
+        args: build -c opt //tensorflow/lite/c:tensorflowlite_c
 
     - name: Get dependencies
       run: |
