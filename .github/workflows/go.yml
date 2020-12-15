@@ -38,7 +38,7 @@ jobs:
       uses: actions/checkout@v2
   
     - name: Build
-      run: go build -buildmode c-shared -o gotflite.so gotflite
+      run: go build -buildmode c-shared -o gotflite.so .
 
     - name: Test
       run: go test -v
