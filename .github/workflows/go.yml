@@ -35,7 +35,7 @@ jobs:
         fi
 
     - name: Build
-      run: go build -v tflite.go
+      run: go build -v gotflite
 
     - name: Test
-      run: go test -v tflite_test.go
+      run: go test -v gotflite
