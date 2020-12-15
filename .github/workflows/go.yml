@@ -27,7 +27,8 @@ jobs:
     - name: Clone TensorFlow
       uses: actions/checkout@v2
       with:
-       name: tensorflow/tensorflow
+        repository: tensorflow/tensorflow
+        path: tensorflow
        
     - uses: actions/setup-python@v2
       with:
