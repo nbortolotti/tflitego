@@ -1,3 +1,3 @@
 ![Go](https://github.com/nbortolotti/gotflite/workflows/Go/badge.svg?branch=main)
 
-#gotflite
+#tflitego: TensorFlow Lite for Go
