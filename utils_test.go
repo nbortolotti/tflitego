@@ -1,4 +1,4 @@
-package gotflite
+package tflitego
 
 import "testing"
 
