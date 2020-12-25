@@ -6,12 +6,26 @@
 tflitego provide a simple and clear solution to use TensorFlow lite in Go. Our objective is provide a cohesive API, simplicity related to TensorFlow Lite C API connection and maintainability.
 
 ## Requeriments
-* TensorFlow Lite C API. A native shared library target that contains the C API for inference has been provided. Assuming a working bazel configuration, this can be built as follows:
+TensorFlow Lite C API. A native shared library target that contains the C API for inference has been provided. Assuming a working bazel configuration, this can be built as follows:
 
 ```
 bazel build -c opt //tensorflow/lite/c:tensorflowlite_c
 ```
 more details [here](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/lite/c)
+
+Alternativally, if your prefer a simplification to use TensorFlow Lite C API, I prepared a a package here:
+* [linux/X86_64, 2.4.0](https://storage.googleapis.com/clitelibrary/ctflitelib_2.4.0.tar.gz)
+
+```
+wget https://storage.googleapis.com/clitelibrary/ctflitelib_[version].tar.gz
+sudo tar -C /usr/local -xzf ctflitelib_[version].tar.gz
+sudo ldconfig
+```
+Replaces version for the available package. Example:
+
+```
+wget https://storage.googleapis.com/clitelibrary/ctflitelib_2.4.0.tar.gz
+```
 
 ## Installation
 
