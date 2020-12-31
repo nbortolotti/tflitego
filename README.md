@@ -26,6 +26,14 @@ Replaces version for the available package. Example:
 ```
 wget https://storage.googleapis.com/clitelibrary/ctflitelib_2.4.0.tar.gz
 ```
+* [raspberrypi_linux/ARMv7, 2.4.0](https://storage.googleapis.com/clitelibrary/ctflitelib_2.4.0_ARMv7.tar.gz)
+
+
+```
+wget https://storage.googleapis.com/clitelibrary/ctflitelib_2.4.0_ARMv7.tar.gz
+sudo tar -C /usr/local -xzf ctflitelib_2.4.0_ARMv7.tar.gz
+
+```
 
 ## Installation
 
