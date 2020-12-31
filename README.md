@@ -14,7 +14,7 @@ bazel build -c opt //tensorflow/lite/c:tensorflowlite_c
 more details [here](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/lite/c)
 
 Alternativally, if your prefer a simplification to use TensorFlow Lite C API, I prepared a a package here:
-* [linux/X86_64, 2.4.0](https://storage.googleapis.com/clitelibrary/ctflitelib_2.4.0.tar.gz)
+* [linux/X86_64, 2.4.0](https://storage.googleapis.com/clitelibrary/ctflitelib_2.4.0.tar.gz). Tested ubuntu 18.04
 
 ```
 wget https://storage.googleapis.com/clitelibrary/ctflitelib_[version].tar.gz
@@ -30,7 +30,7 @@ wget https://storage.googleapis.com/clitelibrary/ctflitelib_2.4.0.tar.gz
 ## Installation
 
 ```
-go get github.com/nbortolotti/gotflite
+go get github.com/nbortolotti/tflitego
 ```
 ## How to use
 
