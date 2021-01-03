@@ -111,5 +111,7 @@ go get github.com/nbortolotti/tflitego
 	fmt.Println(topSpecie(out))
 ```
 
+![animated how to use](https://storage.googleapis.com/tflitego/iris.gif)
+
 Also here is possible view examples about tflitego in action:
 * [tflite examples](https://github.com/nbortolotti/tflitego_examples)
