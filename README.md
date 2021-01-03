@@ -111,7 +111,7 @@ go get github.com/nbortolotti/tflitego
 	fmt.Println(topSpecie(out))
 ```
 
-<img src="https://storage.googleapis.com/tflitego/iris.gif?raw=true" width="200px">
+<img src="https://storage.googleapis.com/tflitego/iris3.gif?raw=true" width="600px">
 
 Also here is possible view examples about tflitego in action:
 * [tflite examples](https://github.com/nbortolotti/tflitego_examples)
