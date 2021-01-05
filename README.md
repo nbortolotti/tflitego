@@ -8,7 +8,7 @@ tflitego provide a simple and clear solution to use TensorFlow lite in Go. Our o
 ## Requeriments
 TensorFlow Lite C API. A native shared library target that contains the C API for inference has been provided. Assuming a working bazel configuration, this can be built as follows:
 
-```bash
+```shell script
 bazel build -c opt //tensorflow/lite/c:tensorflowlite_c
 ```
 more details [here](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/lite/c)
@@ -16,30 +16,30 @@ more details [here](https://github.com/tensorflow/tensorflow/tree/master/tensorf
 Alternativally, if your prefer a simplification to use TensorFlow Lite C API, I prepared a a package here:
 * [linux/X86_64, 2.4.0](https://storage.googleapis.com/clitelibrary/ctflitelib_2.4.0.tar.gz). Tested ubuntu 18.04
 
-```bash
+```shell script
 wget https://storage.googleapis.com/clitelibrary/ctflitelib_[version].tar.gz
 sudo tar -C /usr/local -xzf ctflitelib_[version].tar.gz
 sudo ldconfig
 ```
 Replaces version for the available package. Example:
 
-```bash
+```shell script
 wget https://storage.googleapis.com/clitelibrary/ctflitelib_2.4.0.tar.gz
 ```
 * [raspberrypi_linux/ARMv7, 2.4.0](https://storage.googleapis.com/clitelibrary/ctflitelib_2.4.0_ARMv7.tar.gz)
 
 
-```bash
+```shell script
 wget https://storage.googleapis.com/clitelibrary/ctflitelib_2.4.0_ARMv7.tar.gz
 sudo tar -C /usr/local -xzf ctflitelib_2.4.0_ARMv7.tar.gz
-
 ```
 
 ## Installation
 
-```bash
+```shell script
 go get github.com/nbortolotti/tflitego
 ```
+
 ## How to use
 
 1. Create the model, here using the method from file.
