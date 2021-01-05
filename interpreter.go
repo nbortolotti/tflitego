@@ -11,13 +11,13 @@ import (
 	"fmt"
 )
 
-// TfLiteStatus represents TFLiteStatus
-type TfLiteStatus int
+// LiteStatus represents TFLiteStatus
+type LiteStatus int
 
-// options to represent TFLiteStatus
+// list of options to represent TFLiteStatus
 const (
-	TfLiteOk TfLiteStatus = iota
-	TfLiteError
+	LiteStatusOk LiteStatus = iota
+	LiteStatusError
 	TfLiteDelegateError
 	TfLiteApplicationError
 )
@@ -28,7 +28,7 @@ type TfLiteInterpreter struct {
 }
 
 // NewInterpreter create new TfLiteInterpreter.
-func NewInterpreter(tfmodel *TFLiteModel, opts *InterpreterOptions) (*TfLiteInterpreter, error) {
+func NewInterpreter(tfmodel *Model, opts *InterpreterOptions) (*TfLiteInterpreter, error) {
 	var o *C.TfLiteInterpreterOptions
 	if opts != nil {
 		o = opts.options
@@ -41,42 +41,42 @@ func NewInterpreter(tfmodel *TFLiteModel, opts *InterpreterOptions) (*TfLiteInte
 }
 
 // Delete represents the delete instance of Interpreter.
-func (TfLiteInterpreter *TfLiteInterpreter) Delete() {
-	if TfLiteInterpreter != nil {
-		C.TfLiteInterpreterDelete(TfLiteInterpreter.interpreter)
+func (i *TfLiteInterpreter) Delete() {
+	if i != nil {
+		C.TfLiteInterpreterDelete(i.interpreter)
 	}
 
 }
 
 // GetInputTensor return  tfLiteTensor using index.
-func (TfLiteInterpreter *TfLiteInterpreter) GetInputTensor(index int) (*TfLiteTensor, error) {
-	t := C.TfLiteInterpreterGetInputTensor(TfLiteInterpreter.interpreter, C.int32_t(index))
+func (i *TfLiteInterpreter) GetInputTensor(index int) (*Tensor, error) {
+	t := C.TfLiteInterpreterGetInputTensor(i.interpreter, C.int32_t(index))
 	if t == nil {
 		return nil, fmt.Errorf("unable to retrieve Input Tensor")
 	}
-	return &TfLiteTensor{tensor: t}, nil
+	return &Tensor{tensor: t}, nil
 }
 
 // AllocateTensors allocate tensors for the interpreter.
-func (TfLiteInterpreter *TfLiteInterpreter) AllocateTensors() TfLiteStatus {
-	if TfLiteInterpreter != nil {
-		s := C.TfLiteInterpreterAllocateTensors(TfLiteInterpreter.interpreter)
-		return TfLiteStatus(s)
+func (i *TfLiteInterpreter) AllocateTensors() LiteStatus {
+	if i != nil {
+		s := C.TfLiteInterpreterAllocateTensors(i.interpreter)
+		return LiteStatus(s)
 	}
-	return TfLiteError
+	return LiteStatusError
 }
 
 // Invoke invoke interpreter
-func (TfLiteInterpreter *TfLiteInterpreter) Invoke() TfLiteStatus {
-	s := C.TfLiteInterpreterInvoke(TfLiteInterpreter.interpreter)
-	return TfLiteStatus(s)
+func (i *TfLiteInterpreter) Invoke() LiteStatus {
+	s := C.TfLiteInterpreterInvoke(i.interpreter)
+	return LiteStatus(s)
 }
 
-// GetOutputTensor return output TfLiteTensor specified by index.
-func (TfLiteInterpreter *TfLiteInterpreter) GetOutputTensor(index int) *TfLiteTensor {
-	t := C.TfLiteInterpreterGetOutputTensor(TfLiteInterpreter.interpreter, C.int32_t(index))
+// GetOutputTensor return output Tensor specified by index.
+func (i *TfLiteInterpreter) GetOutputTensor(index int) *Tensor {
+	t := C.TfLiteInterpreterGetOutputTensor(i.interpreter, C.int32_t(index))
 	if t == nil {
 		return nil
 	}
-	return &TfLiteTensor{tensor: t}
+	return &Tensor{tensor: t}
 }
