@@ -8,7 +8,7 @@ tflitego provide a simple and clear solution to use TensorFlow lite in Go. Our o
 ## Requeriments
 TensorFlow Lite C API. A native shared library target that contains the C API for inference has been provided. Assuming a working bazel configuration, this can be built as follows:
 
-```
+```bash
 bazel build -c opt //tensorflow/lite/c:tensorflowlite_c
 ```
 more details [here](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/lite/c)
@@ -16,20 +16,20 @@ more details [here](https://github.com/tensorflow/tensorflow/tree/master/tensorf
 Alternativally, if your prefer a simplification to use TensorFlow Lite C API, I prepared a a package here:
 * [linux/X86_64, 2.4.0](https://storage.googleapis.com/clitelibrary/ctflitelib_2.4.0.tar.gz). Tested ubuntu 18.04
 
-```
+```bash
 wget https://storage.googleapis.com/clitelibrary/ctflitelib_[version].tar.gz
 sudo tar -C /usr/local -xzf ctflitelib_[version].tar.gz
 sudo ldconfig
 ```
 Replaces version for the available package. Example:
 
-```
+```bash
 wget https://storage.googleapis.com/clitelibrary/ctflitelib_2.4.0.tar.gz
 ```
 * [raspberrypi_linux/ARMv7, 2.4.0](https://storage.googleapis.com/clitelibrary/ctflitelib_2.4.0_ARMv7.tar.gz)
 
 
-```
+```bash
 wget https://storage.googleapis.com/clitelibrary/ctflitelib_2.4.0_ARMv7.tar.gz
 sudo tar -C /usr/local -xzf ctflitelib_2.4.0_ARMv7.tar.gz
 
@@ -37,78 +37,74 @@ sudo tar -C /usr/local -xzf ctflitelib_2.4.0_ARMv7.tar.gz
 
 ## Installation
 
-```
+```bash
 go get github.com/nbortolotti/tflitego
 ```
 ## How to use
 
 1. Create the model, here using the method from file.
 
-```
-	model, err := tflitego.NewTFLiteModelFromFile("iris_lite.tflite")
-	if err != nil {
-		if model == nil {
-			log.Fatal("cannot load model")
-		}
-	}
-	defer model.Delete()
+```go
+model, err := tflitego.NewTFLiteModelFromFile("iris_lite.tflite")
+defer model.Delete()
+if err != nil {
+    log.Fatal("cannot load model", err)
+}
 ```
 
 2. Set Interpreter options
 
-```
-	options, err := tflitego.NewInterpreterOptions()
-	if err != nil {
-		options.SetNumThread(4)
-		defer options.Delete()
-	}
+```go
+options, err := tflitego.NewInterpreterOptions()
+defer options.Delete()
+if err != nil {
+    log.Fatal("cannot initialize interpreter options", err)
+}
+options.SetNumThread(4)
 ```
 
 3. Create Interpreter
 
-```
-	interpreter, err := tflitego.NewInterpreter(model, options)
-	if err != nil {
-		if interpreter == nil {
-			log.Println("cannot create interpreter")
-			return
-		}
-		defer interpreter.Delete()
-	}
+```go
+interpreter, err := tflitego.NewInterpreter(model, options)
+defer interpreter.Delete()
+if err != nil {
+    log.Fatal("cannot create interpreter", err)
+}
 ```
 
 4. Allocate Tensors
 
-```
-	status := interpreter.AllocateTensors()
-	if status != tflitego.TfLiteOk {
-		log.Println("allocate Tensors failed")
-	}
+```go
+status := interpreter.AllocateTensors()
+if status != tflitego.TfLiteOk {
+    log.Println("allocate Tensors failed")
+}
 ```
 
 5. Input Tensor/s
 
-```
-	newspecie := []float32{7.9, 3.8, 6.4, 2.0}
-	input, err := interpreter.GetInputTensor(0)
-	input.SetFloat32(newspecie)
+```go
+newspecie := []float32{7.9, 3.8, 6.4, 2.0}
+input, err := interpreter.GetInputTensor(0)
+input.SetFloat32(newspecie)
 ```
 
 6. Interpreter Invoke 
 
-```
-	status = interpreter.Invoke()
-	if status != tflitego.TfLiteOk {
-		log.Println("invoke interpreter failed")
-	}
+```go
+status = interpreter.Invoke()
+if status != tflitego.TfLiteOk {
+    log.Println("invoke interpreter failed")
+}
 ```
 
 7. Outputs/Results
 
-```
-	output := interpreter.GetOutputTensor(0)
-	out := output.OperateFloat32()
-	fmt.Println(topSpecie(out))
+```go
+output := interpreter.GetOutputTensor(0)
+out := output.OperateFloat32()
+fmt.Println(topSpecie(out))
 ```
 
 <img src="https://storage.googleapis.com/tflitego/iris3.gif?raw=true" width="600px">
