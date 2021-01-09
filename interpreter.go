@@ -11,12 +11,12 @@ import (
 	"fmt"
 )
 
-// LiteStatus represents TFLiteStatus
-type LiteStatus int
+// Status represents TFLiteStatus
+type Status int
 
 // list of options to represent TFLiteStatus
 const (
-	LiteStatusOk LiteStatus = iota
+	LiteStatusOk Status = iota
 	LiteStatusError
 	TfLiteDelegateError
 	TfLiteApplicationError
@@ -58,18 +58,18 @@ func (i *TfLiteInterpreter) GetInputTensor(index int) (*Tensor, error) {
 }
 
 // AllocateTensors allocate tensors for the interpreter.
-func (i *TfLiteInterpreter) AllocateTensors() LiteStatus {
+func (i *TfLiteInterpreter) AllocateTensors() Status {
 	if i != nil {
 		s := C.TfLiteInterpreterAllocateTensors(i.interpreter)
-		return LiteStatus(s)
+		return Status(s)
 	}
 	return LiteStatusError
 }
 
 // Invoke invoke interpreter
-func (i *TfLiteInterpreter) Invoke() LiteStatus {
+func (i *TfLiteInterpreter) Invoke() Status {
 	s := C.TfLiteInterpreterInvoke(i.interpreter)
-	return LiteStatus(s)
+	return Status(s)
 }
 
 // GetOutputTensor return output Tensor specified by index.
