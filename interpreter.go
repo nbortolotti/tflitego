@@ -1,4 +1,4 @@
-package tflitego
+package tflite
 
 /*
 #include <stdio.h>
@@ -16,10 +16,10 @@ type Status int
 
 // list of options to represent TFLiteStatus
 const (
-	LiteStatusOk Status = iota
-	LiteStatusError
-	TfLiteDelegateError
-	TfLiteApplicationError
+	StatusOk Status = iota
+	StatusError
+	DelegateError
+	ApplicationError
 )
 
 // TfLiteInterpreter represents a  TensorFlow Lite Interpreter .
@@ -63,7 +63,7 @@ func (i *TfLiteInterpreter) AllocateTensors() Status {
 		s := C.TfLiteInterpreterAllocateTensors(i.interpreter)
 		return Status(s)
 	}
-	return LiteStatusError
+	return StatusError
 }
 
 // Invoke invoke interpreter
