@@ -7,27 +7,24 @@ package tflitego
 #cgo linux LDFLAGS: -lm -ldl -lrt
 */
 import "C"
-import (
-	"fmt"
-)
 
-// TFLiteModel represents a TensorFlow Lite Model.
-type TFLiteModel struct {
+// Model represents a TensorFlow Lite Model.
+type Model struct {
 	model *C.TfLiteModel
 }
 
-// NewTFLiteModelFromFile creates a new TensorFlow Lite Model from File.
-func NewTFLiteModelFromFile(modelPath string) (*TFLiteModel, error) {
-	m := C.TfLiteModelCreateFromFile(C.CString(modelPath))
+// NewModelFromFile creates a new TensorFlow Lite Model from File.
+func NewModelFromFile(path string) (*Model, error) {
+	m := C.TfLiteModelCreateFromFile(C.CString(path))
 	if m == nil {
-		return nil, fmt.Errorf("unable to create the model")
+		return nil, ErrCreateModel
 	}
-	return &TFLiteModel{model: m}, nil
+	return &Model{model: m}, nil
 }
 
 // Delete delete instance of TF Lite model.
-func (TFLiteModel *TFLiteModel) Delete() {
-	if TFLiteModel != nil {
-		C.TfLiteModelDelete(TFLiteModel.model)
+func (m *Model) Delete() {
+	if m != nil {
+		C.TfLiteModelDelete(m.model)
 	}
 }
