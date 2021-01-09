@@ -1,5 +1,6 @@
 ![Go](https://github.com/nbortolotti/gotflite/workflows/Go/badge.svg?branch=main)
 [![GoDoc](https://godoc.org/github.com/nbortolotti/tflitego?status.svg)](https://godoc.org/github.com/nbortolotti/tflitego)
+[![Gitter](https://badges.gitter.im/tflitego/community.svg)](https://gitter.im/tflitego/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 
 # tflitego: TensorFlow Lite for Go
