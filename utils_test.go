@@ -1,4 +1,4 @@
-package tflitego
+package tflite
 
 import "testing"
 
