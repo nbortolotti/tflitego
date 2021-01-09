@@ -45,7 +45,7 @@ go get github.com/nbortolotti/tflitego
 1. Create the model, here using the method from file.
 
 ```go
-model, err := tflitego.NewTFLiteModelFromFile("iris_lite.tflite")
+model, err := tflite.NewTFLiteModelFromFile("iris_lite.tflite")
 defer model.Delete()
 if err != nil {
     log.Fatal("cannot load model", err)
@@ -55,7 +55,7 @@ if err != nil {
 2. Set Interpreter options
 
 ```go
-options, err := tflitego.NewInterpreterOptions()
+options, err := tflite.NewInterpreterOptions()
 defer options.Delete()
 if err != nil {
     log.Fatal("cannot initialize interpreter options", err)
@@ -66,7 +66,7 @@ options.SetNumThread(4)
 3. Create Interpreter
 
 ```go
-interpreter, err := tflitego.NewInterpreter(model, options)
+interpreter, err := tflite.NewInterpreter(model, options)
 defer interpreter.Delete()
 if err != nil {
     log.Fatal("cannot create interpreter", err)
@@ -94,7 +94,7 @@ input.SetFloat32(newspecie)
 
 ```go
 status = interpreter.Invoke()
-if status != tflitego.TfLiteOk {
+if status != tflite.StatusOk {
     log.Println("invoke interpreter failed")
 }
 ```
