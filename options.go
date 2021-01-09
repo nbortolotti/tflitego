@@ -7,9 +7,6 @@ package tflitego
 #cgo linux LDFLAGS: -lm -ldl -lrt
 */
 import "C"
-import (
-	"fmt"
-)
 
 // InterpreterOptions represents a TensorFlow Lite InterpreterOptions.
 type InterpreterOptions struct {
@@ -20,19 +17,19 @@ type InterpreterOptions struct {
 func NewInterpreterOptions() (*InterpreterOptions, error) {
 	o := C.TfLiteInterpreterOptionsCreate()
 	if o == nil {
-		return nil, fmt.Errorf("unable to create an InterpreterOptions")
+		return nil, ErrCreateInterpreterOptions
 	}
 	return &InterpreterOptions{options: o}, nil
 }
 
 // Delete delete instance of InterpreterOptions.
-func (InterpreterOptions *InterpreterOptions) Delete() {
-	if InterpreterOptions != nil {
-		C.TfLiteInterpreterOptionsDelete(InterpreterOptions.options)
+func (o *InterpreterOptions) Delete() {
+	if o != nil {
+		C.TfLiteInterpreterOptionsDelete(o.options)
 	}
 }
 
 // SetNumThread set number of threads.
-func (InterpreterOptions *InterpreterOptions) SetNumThread(numThreads int) {
-	C.TfLiteInterpreterOptionsSetNumThreads(InterpreterOptions.options, C.int32_t(numThreads))
+func (o *InterpreterOptions) SetNumThread(numThreads int) {
+	C.TfLiteInterpreterOptionsSetNumThreads(o.options, C.int32_t(numThreads))
 }
