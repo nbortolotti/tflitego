@@ -9,6 +9,8 @@ package tflite
 import "C"
 import (
 	"fmt"
+	"reflect"
+	"unsafe"
 )
 
 // TensorType is types of the tensor.
@@ -57,6 +59,11 @@ func (t *Tensor) Shape() []int {
 	return shape
 }
 
+// Data return pointer of buffer.
+func (t *Tensor) Data() unsafe.Pointer {
+	return C.TfLiteTensorData(t.tensor)
+}
+
 // ByteSize return byte size of the tensor.
 func (t *Tensor) ByteSize() uint {
 	return uint(C.TfLiteTensorByteSize(t.tensor))
@@ -93,4 +100,14 @@ func (t *Tensor) OperateFloat32() []float32 {
 	}
 	n := t.ByteSize() / 4
 	return (*((*[1<<29 - 1]float32)(ptr)))[:n]
+}
+
+// FromBuffer copy Tensor from Buffer
+func (t *Tensor) FromBuffer(b interface{}) Status {
+	return Status(C.TfLiteTensorCopyFromBuffer(t.tensor, unsafe.Pointer(reflect.ValueOf(b).Pointer()), C.size_t(t.ByteSize())))
+}
+
+// ToBuffer copy Tensor to Buffer
+func (t *Tensor) ToBuffer(b interface{}) Status {
+	return Status(C.TfLiteTensorCopyToBuffer(t.tensor, unsafe.Pointer(reflect.ValueOf(b).Pointer()), C.size_t(t.ByteSize())))
 }
