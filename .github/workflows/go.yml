@@ -2,9 +2,13 @@ name: Go
 
 on:
   push:
-    branches: [ main ]
+    branches: 
+      - main
+      - develope
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
+      - develope
 
 jobs:
 
@@ -16,7 +20,7 @@ jobs:
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
       with:
-        go-version: ^1.13
+        go-version: ^1.15
         
     - name: Set up Tensorflow c Library
       run: |
@@ -39,6 +43,15 @@ jobs:
   
     - name: Build
       run: go build .
-
+       
+    - name: Format  
+      run: go fmt
+    
     - name: Test
       run: go test -v
+  
+    - name: Vet 
+      run: go vet -v
+    
+    - name: Coverage
+      run: go test -v -covermode=atomic
