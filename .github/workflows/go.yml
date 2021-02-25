@@ -45,7 +45,7 @@ jobs:
       run: go build .
        
     - name: Format  
-      run: go fmt
+      run: go fmt ./...
     
     - name: Test
       run: go test -v
