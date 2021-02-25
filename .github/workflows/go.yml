@@ -54,4 +54,4 @@ jobs:
       run: go vet -v
     
     - name: Coverage
-      run: go test -v -covermode=atomic
+      run: go test -v -covermode=atomic -coverprofile=coverage.tx ./... && go tool cover -func=coverage.tx
