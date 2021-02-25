@@ -48,7 +48,7 @@ jobs:
       run: go fmt ./...
     
     - name: Test
-      run: go test -v
+      run: go test -v ./...
   
     - name: Vet 
       run: go vet -v
