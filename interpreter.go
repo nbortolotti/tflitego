@@ -41,11 +41,15 @@ func NewInterpreter(tfmodel *Model, opts *InterpreterOptions) (*TfLiteInterprete
 }
 
 // Delete represents the delete instance of Interpreter.
-func (i *TfLiteInterpreter) Delete() {
+func (i *TfLiteInterpreter) Delete() error {
 	if i != nil {
-		C.TfLiteInterpreterDelete(i.interpreter)
+		_, err := C.TfLiteInterpreterDelete(i.interpreter)
+		if err != nil {
+			return ErrDeleteIntepreter
+		}
+		return nil
 	}
-
+	return ErrDeleteIntepreter
 }
 
 // GetInputTensor return  tfLiteTensor using index.
@@ -73,10 +77,10 @@ func (i *TfLiteInterpreter) Invoke() Status {
 }
 
 // GetOutputTensor return output Tensor specified by index.
-func (i *TfLiteInterpreter) GetOutputTensor(index int) *Tensor {
+func (i *TfLiteInterpreter) GetOutputTensor(index int) (*Tensor, error) {
 	t := C.TfLiteInterpreterGetOutputTensor(i.interpreter, C.int32_t(index))
 	if t == nil {
-		return nil
+		return nil, fmt.Errorf("unable to retrieve output Tensor")
 	}
-	return &Tensor{tensor: t}
+	return &Tensor{tensor: t}, nil
 }
