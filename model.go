@@ -23,8 +23,13 @@ func NewModelFromFile(path string) (*Model, error) {
 }
 
 // Delete delete instance of TF Lite model.
-func (m *Model) Delete() {
+func (m *Model) Delete() error {
 	if m != nil {
-		C.TfLiteModelDelete(m.model)
+		_, err := C.TfLiteModelDelete(m.model)
+		if err != nil {
+			return ErrDeleteModel
+		}
+		return nil
 	}
+	return ErrDeleteModel
 }

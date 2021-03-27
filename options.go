@@ -23,13 +23,22 @@ func NewInterpreterOptions() (*InterpreterOptions, error) {
 }
 
 // Delete delete instance of InterpreterOptions.
-func (o *InterpreterOptions) Delete() {
+func (o *InterpreterOptions) Delete() error {
 	if o != nil {
-		C.TfLiteInterpreterOptionsDelete(o.options)
+		_, err := C.TfLiteInterpreterOptionsDelete(o.options)
+		if err != nil {
+			return ErrDeleteIntepreterOptions
+		}
+		return nil
 	}
+	return ErrDeleteIntepreterOptions
 }
 
 // SetNumThread set number of threads.
-func (o *InterpreterOptions) SetNumThread(numThreads int) {
-	C.TfLiteInterpreterOptionsSetNumThreads(o.options, C.int32_t(numThreads))
+func (o *InterpreterOptions) SetNumThread(numThreads int) error {
+	_, err := C.TfLiteInterpreterOptionsSetNumThreads(o.options, C.int32_t(numThreads))
+	if err != nil {
+		return ErrInterpreterSetNumThread
+	}
+	return nil
 }
