@@ -87,8 +87,7 @@ func testByteSize(t *testing.T) {
 		t.Errorf("cannot Set Tensor: %s", err)
 	}
 
-	var want uint
-	want = 16
+	var want uint = 16
 	got := input.ByteSize()
 	if got != want {
 		t.Errorf("Got %c but wants %c", got, want)
@@ -212,9 +211,8 @@ func testData(t *testing.T) {
 	}
 
 	want := 8
-	got := input.Data()
-	if unsafe.Sizeof(got) != uintptr(want) {
-		t.Errorf("got %v but wants %v", unsafe.Sizeof(got), uintptr(want))
+	if unsafe.Sizeof(input.Data()) != uintptr(want) {
+		t.Errorf("got %v but wants %v", unsafe.Sizeof(input.Data()), uintptr(want))
 	}
 }
 
