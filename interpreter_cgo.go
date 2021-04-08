@@ -2,114 +2,195 @@ package tflite
 
 import (
 	"C"
+	"reflect"
 	"testing"
 )
 
 func testNewInterpreter(t *testing.T) {
-	m, err := NewModelFromFile("test/mobilenet_v2_1.0_224_quant.tflite")
-	if m == nil && err != nil {
-		t.Errorf("Model not success")
+	type response struct {
+		i uintptr
+		e error
 	}
 
-	o, err := NewInterpreterOptions()
-	if err != nil {
-		t.Errorf("cannot initialize interpreter options")
+	tests := []struct {
+		name  string
+		input string
+		want  response
+	}{
+		{
+			name:  "Quant model",
+			input: "test/mobilenet_v2_1.0_224_quant.tflite",
+			want: response{
+				i: 8,
+				e: nil,
+			},
+		},
+		{
+			name:  "Interpreter Emty model",
+			input: "",
+			want: response{
+				i: 0,
+				e: ErrCreateIntepreter,
+			},
+		},
 	}
-	o.SetNumThread(4)
 
-	i, err := NewInterpreter(m, o)
-	if i == nil && err != nil {
-		t.Errorf("cannot create interpreter")
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			m, _ := NewModelFromFile(tc.input)
+
+			o, _ := NewInterpreterOptions()
+			o.SetNumThread(1)
+
+			it, err := NewInterpreter(m, o)
+
+			var got response
+			if it == nil {
+				got = response{
+					i: 0,
+					e: err,
+				}
+			} else {
+				got = response{
+					i: reflect.TypeOf(it).Size(),
+					e: err,
+				}
+			}
+
+			if got.e != tc.want.e {
+				t.Errorf("NewInterpreter got %s = wants %s", got.e, tc.want.e)
+			}
+		})
 	}
 }
 
 func testInterpreterDelete(t *testing.T) {
-	m, err := NewModelFromFile("test/mobilenet_v2_1.0_224_quant.tflite")
-	if m == nil && err != nil {
-		t.Errorf("Model not success")
+	tests := []struct {
+		name  string
+		input string
+		want  error
+	}{
+		{
+			name:  "quant model",
+			input: "test/mobilenet_v2_1.0_224_quant.tflite",
+			want:  nil,
+		},
+		{
+			name:  "empty model",
+			input: "",
+			want:  ErrDeleteIntepreter,
+		},
 	}
 
-	o, err := NewInterpreterOptions()
-	if err != nil {
-		t.Errorf("cannot initialize interpreter options")
-	}
-	o.SetNumThread(4)
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			m, _ := NewModelFromFile(tc.input)
 
-	i, err := NewInterpreter(m, o)
-	if i == nil && err != nil {
-		t.Errorf("cannot create interpreter")
-	}
+			o, _ := NewInterpreterOptions()
 
-	err = i.Delete()
-	if err != nil {
-		t.Errorf("interpreter Delete not success")
+			i, _ := NewInterpreter(m, o)
+
+			got := i.Delete()
+			if got != tc.want {
+				t.Fatalf("expected: %v, got: %v", tc.want, got)
+			}
+		})
 	}
 }
 
 func testGetInputTensor(t *testing.T) {
-	m, err := NewModelFromFile("test/mobilenet_v2_1.0_224_quant.tflite")
-	if m == nil && err != nil {
-		t.Errorf("Model not success")
+	tests := []struct {
+		name  string
+		input string
+		want  error
+	}{
+		{
+			name:  "General model",
+			input: "test/iris_lite.tflite",
+			want:  nil,
+		},
 	}
 
-	o, err := NewInterpreterOptions()
-	if err != nil {
-		t.Errorf("cannot initialize interpreter options")
-	}
-	o.SetNumThread(4)
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
 
-	i, err := NewInterpreter(m, o)
-	if i == nil && err != nil {
-		t.Errorf("cannot create interpreter")
-	}
+			m, _ := NewModelFromFile("test/mobilenet_v2_1.0_224_quant.tflite")
 
-	input, err := i.GetInputTensor(0)
-	if input == nil && err != nil {
-		t.Errorf("cannot Get Input Tensor")
+			o, _ := NewInterpreterOptions()
+			o.SetNumThread(1)
+
+			i, _ := NewInterpreter(m, o)
+
+			if _, got := i.GetInputTensor(0); got != tc.want {
+				t.Errorf("GetInputTensor got %s = wants %s", got, tc.want)
+			}
+		})
 	}
 }
 
 func testGetOutputTensor(t *testing.T) {
-	m, err := NewModelFromFile("test/iris_lite.tflite")
-	if m == nil && err != nil {
-		t.Errorf("Model not success")
+	type response struct {
+		tb uint
+		e  error
 	}
 
-	o, err := NewInterpreterOptions()
-	if err != nil {
-		t.Errorf("cannot initialize interpreter options")
+	tests := []struct {
+		name  string
+		input string
+		want  response
+	}{
+		{
+			name:  "General model",
+			input: "test/iris_lite.tflite",
+			want: response{
+				tb: 12,
+				e:  nil,
+			},
+		},
+		{
+			name:  "General model",
+			input: "",
+			want: response{
+				tb: 0,
+				e:  ErrOutputTensor,
+			},
+		},
 	}
-	o.SetNumThread(4)
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			m, _ := NewModelFromFile(tc.input)
 
-	i, err := NewInterpreter(m, o)
-	if i == nil && err != nil {
-		t.Errorf("cannot create interpreter")
-	}
+			o, _ := NewInterpreterOptions()
+			o.SetNumThread(1)
 
-	s := i.AllocateTensors()
-	if s != StatusOk {
-		t.Errorf("allocate Tensors failed")
-	}
+			i, _ := NewInterpreter(m, o)
 
-	input, err := i.GetInputTensor(0)
-	if input == nil && err != nil {
-		t.Errorf("cannot Get Input Tensor")
-	}
+			i.AllocateTensors()
 
-	ts := []float32{7.9, 3.8, 6.4, 2.0}
+			input, _ := i.GetInputTensor(0)
 
-	err = input.SetFloat32(ts)
-	if err != nil {
-		t.Errorf("cannot Set Tensor: %s", err)
-	}
+			ts := []float32{7.9, 3.8, 6.4, 2.0}
+			_ = input.SetFloat32(ts)
 
-	ivs := i.Invoke()
-	if ivs != StatusOk {
-		t.Errorf("invoke interpreter failed")
-	}
+			i.Invoke()
+			tensor, err := i.GetOutputTensor(0)
 
-	_, err = i.GetOutputTensor(0)
-	if err != nil {
-		t.Errorf("invoke interpreter failed")
+			var got response
+			if tensor == nil {
+				got = response{
+					tb: 0,
+					e:  err,
+				}
+			} else {
+				got = response{
+					tb: tensor.ByteSize(),
+					e:  err,
+				}
+			}
+
+			if got != tc.want {
+				t.Errorf("GetOutputTensor got %s = wants %s", got.e, tc.want.e)
+			}
+		})
 	}
 }

@@ -7,9 +7,6 @@ package tflite
 #cgo linux LDFLAGS: -lm -ldl -lrt
 */
 import "C"
-import (
-	"fmt"
-)
 
 // Status represents TFLiteStatus
 type Status int
@@ -33,20 +30,17 @@ func NewInterpreter(tfmodel *Model, opts *InterpreterOptions) (*TfLiteInterprete
 	if opts != nil {
 		o = opts.options
 	}
-	i := C.TfLiteInterpreterCreate(tfmodel.model, o)
-	if i == nil {
-		return nil, fmt.Errorf("unable to create new TFLiteInterpreter")
+	if tfmodel != nil {
+		i := C.TfLiteInterpreterCreate(tfmodel.model, o)
+		return &TfLiteInterpreter{interpreter: i}, nil
 	}
-	return &TfLiteInterpreter{interpreter: i}, nil
+	return nil, ErrCreateIntepreter
 }
 
 // Delete represents the delete instance of Interpreter.
 func (i *TfLiteInterpreter) Delete() error {
 	if i != nil {
-		_, err := C.TfLiteInterpreterDelete(i.interpreter)
-		if err != nil {
-			return ErrDeleteIntepreter
-		}
+		C.TfLiteInterpreterDelete(i.interpreter)
 		return nil
 	}
 	return ErrDeleteIntepreter
@@ -54,11 +48,11 @@ func (i *TfLiteInterpreter) Delete() error {
 
 // GetInputTensor return  tfLiteTensor using index.
 func (i *TfLiteInterpreter) GetInputTensor(index int) (*Tensor, error) {
-	t := C.TfLiteInterpreterGetInputTensor(i.interpreter, C.int32_t(index))
-	if t == nil {
-		return nil, fmt.Errorf("unable to retrieve Input Tensor")
+	if i != nil {
+		t := C.TfLiteInterpreterGetInputTensor(i.interpreter, C.int32_t(index))
+		return &Tensor{tensor: t}, nil
 	}
-	return &Tensor{tensor: t}, nil
+	return nil, ErrInputTensor
 }
 
 // AllocateTensors allocate tensors for the interpreter.
@@ -72,15 +66,18 @@ func (i *TfLiteInterpreter) AllocateTensors() Status {
 
 // Invoke invoke interpreter
 func (i *TfLiteInterpreter) Invoke() Status {
-	s := C.TfLiteInterpreterInvoke(i.interpreter)
-	return Status(s)
+	if i != nil {
+		s := C.TfLiteInterpreterInvoke(i.interpreter)
+		return Status(s)
+	}
+	return StatusError
 }
 
 // GetOutputTensor return output Tensor specified by index.
 func (i *TfLiteInterpreter) GetOutputTensor(index int) (*Tensor, error) {
-	t := C.TfLiteInterpreterGetOutputTensor(i.interpreter, C.int32_t(index))
-	if t == nil {
-		return nil, fmt.Errorf("unable to retrieve output Tensor")
+	if i != nil {
+		t := C.TfLiteInterpreterGetOutputTensor(i.interpreter, C.int32_t(index))
+		return &Tensor{tensor: t}, nil
 	}
-	return &Tensor{tensor: t}, nil
+	return nil, ErrOutputTensor
 }
