@@ -23,7 +23,7 @@ func testNumDims(t *testing.T) {
 		want  response
 	}{
 		{
-			name:  "General model",
+			name:  "Testing tensor number of dimensions with a general model",
 			input: "testing/iris_lite.tflite",
 			want: response{
 				nd: 2,
@@ -33,7 +33,6 @@ func testNumDims(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-
 			m, _ := NewModelFromFile(tc.input)
 
 			o, _ := NewInterpreterOptions()
@@ -49,11 +48,14 @@ func testNumDims(t *testing.T) {
 
 			ts := []float32{7.9, 3.8, 6.4, 2.0}
 
-			_ = input.SetFloat32(ts)
+			err = input.SetFloat32(ts)
+			if err != nil {
+				t.Errorf("cannot set Tensor: %s", err)
+			}
 
 			got := input.NumDims()
 			if got != tc.want.nd {
-				t.Fatalf("expected: %v, got: %v", tc.want, got)
+				t.Errorf("expected: %v, got: %v", tc.want.nd, got)
 			}
 
 		})
@@ -61,165 +63,200 @@ func testNumDims(t *testing.T) {
 }
 
 func testByteSize(t *testing.T) {
-	m, err := NewModelFromFile("testing/iris_lite.tflite")
-	if m == nil && err != nil {
-		t.Errorf("Model not success")
+	type response struct {
+		bs uint
 	}
 
-	o, err := NewInterpreterOptions()
-	if err != nil {
-		t.Errorf("cannot initialize interpreter options")
-	}
-	o.SetNumThread(4)
-
-	i, err := NewInterpreter(m, o)
-	if i == nil && err != nil {
-		t.Errorf("cannot create interpreter")
-	}
-
-	s := i.AllocateTensors()
-	if s != StatusOk {
-		t.Errorf("allocate Tensors failed")
+	tests := []struct {
+		name  string
+		input string
+		want  response
+	}{
+		{
+			name:  "Testing tensor's bytes size with a general model",
+			input: "testing/iris_lite.tflite",
+			want: response{
+				bs: 16,
+			},
+		},
 	}
 
-	input, err := i.GetInputTensor(0)
-	if input == nil && err != nil {
-		t.Errorf("cannot Get Input Tensor")
-	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			m, _ := NewModelFromFile(tc.input)
 
-	ts := []float32{7.9, 3.8, 6.4, 2.0}
+			o, _ := NewInterpreterOptions()
+			o.SetNumThread(1)
 
-	err = input.SetFloat32(ts)
-	if err != nil {
-		t.Errorf("cannot Set Tensor: %s", err)
-	}
+			i, _ := NewInterpreter(m, o)
+			_ = i.AllocateTensors()
 
-	var want uint = 16
-	got := input.ByteSize()
-	if got != want {
-		t.Errorf("Got %c but wants %c", got, want)
+			input, err := i.GetInputTensor(0)
+			if input == nil && err != nil {
+				t.Errorf("cannot get input Tensor")
+			}
+
+			ts := []float32{7.9, 3.8, 6.4, 2.0}
+
+			err = input.SetFloat32(ts)
+			if err != nil {
+				t.Errorf("cannot Set Tensor: %s", err)
+			}
+
+			got := input.ByteSize()
+			if got != tc.want.bs {
+				t.Errorf("expected: %v, got: %v", tc.want.bs, got)
+			}
+
+		})
 	}
 }
 
 func testShape(t *testing.T) {
-	m, err := NewModelFromFile("testing/iris_lite.tflite")
-	if m == nil && err != nil {
-		t.Errorf("Model not success")
+	type response struct {
+		ts []int
 	}
 
-	o, err := NewInterpreterOptions()
-	if err != nil {
-		t.Errorf("cannot initialize interpreter options")
-	}
-	o.SetNumThread(4)
-
-	i, err := NewInterpreter(m, o)
-	if i == nil && err != nil {
-		t.Errorf("cannot create interpreter")
-	}
-
-	s := i.AllocateTensors()
-	if s != StatusOk {
-		t.Errorf("allocate Tensors failed")
+	tests := []struct {
+		name  string
+		input string
+		want  response
+	}{
+		{
+			name:  "Testing tensor's shape with a general model",
+			input: "testing/iris_lite.tflite",
+			want: response{
+				ts: []int{1, 4},
+			},
+		},
 	}
 
-	input, err := i.GetInputTensor(0)
-	if input == nil && err != nil {
-		t.Errorf("cannot Get Input Tensor")
-	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			m, _ := NewModelFromFile(tc.input)
 
-	ts := []float32{7.9, 3.8, 6.4, 2.0}
+			o, _ := NewInterpreterOptions()
+			o.SetNumThread(1)
 
-	err = input.SetFloat32(ts)
-	if err != nil {
-		t.Errorf("cannot Set Tensor: %s", err)
-	}
+			i, _ := NewInterpreter(m, o)
+			_ = i.AllocateTensors()
 
-	want := []int{1, 4}
-	got := input.Shape()
-	if len(got) != len(want) {
-		t.Errorf("Got %c but wants %c", got, want)
+			input, err := i.GetInputTensor(0)
+			if input == nil && err != nil {
+				t.Errorf("cannot get input Tensor")
+			}
+
+			ts := []float32{7.9, 3.8, 6.4, 2.0}
+
+			err = input.SetFloat32(ts)
+			if err != nil {
+				t.Errorf("cannot Set Tensor: %s", err)
+			}
+
+			got := input.Shape()
+			if len(got) != len(tc.want.ts) {
+				t.Fatalf("expected: %v, got: %v", len(tc.want.ts), len(got))
+			}
+
+		})
 	}
 }
 
 func testName(t *testing.T) {
-	m, err := NewModelFromFile("testing/iris_lite.tflite")
-	if m == nil && err != nil {
-		t.Errorf("Model not success")
+	type response struct {
+		n string
 	}
 
-	o, err := NewInterpreterOptions()
-	if err != nil {
-		t.Errorf("cannot initialize interpreter options")
-	}
-	o.SetNumThread(4)
-
-	i, err := NewInterpreter(m, o)
-	if i == nil && err != nil {
-		t.Errorf("cannot create interpreter")
-	}
-
-	s := i.AllocateTensors()
-	if s != StatusOk {
-		t.Errorf("allocate Tensors failed")
+	tests := []struct {
+		name  string
+		input string
+		want  response
+	}{
+		{
+			name:  "Testing tensor name with a general model",
+			input: "testing/iris_lite.tflite",
+			want: response{
+				n: "dense_input",
+			},
+		},
 	}
 
-	input, err := i.GetInputTensor(0)
-	if input == nil && err != nil {
-		t.Errorf("cannot Get Input Tensor")
-	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			m, _ := NewModelFromFile(tc.input)
 
-	ts := []float32{7.9, 3.8, 6.4, 2.0}
+			o, _ := NewInterpreterOptions()
+			o.SetNumThread(1)
 
-	err = input.SetFloat32(ts)
-	if err != nil {
-		t.Errorf("cannot Set Tensor: %s", err)
-	}
+			i, _ := NewInterpreter(m, o)
+			_ = i.AllocateTensors()
 
-	want := "dense_input"
-	got := input.Name()
-	if got != want {
-		t.Errorf("Got %s but wants %s", got, want)
+			input, err := i.GetInputTensor(0)
+			if input == nil && err != nil {
+				t.Errorf("cannot get input Tensor")
+			}
+
+			ts := []float32{7.9, 3.8, 6.4, 2.0}
+
+			err = input.SetFloat32(ts)
+			if err != nil {
+				t.Errorf("cannot set Tensor: %s", err)
+			}
+
+			got := input.Name()
+			if got != tc.want.n {
+				t.Errorf("expected: %v, got: %v", tc.want.n, got)
+			}
+		})
 	}
 }
 
 func testData(t *testing.T) {
-	m, err := NewModelFromFile("testing/iris_lite.tflite")
-	if m == nil && err != nil {
-		t.Errorf("Model not success")
+	type response struct {
+		d uintptr
 	}
 
-	o, err := NewInterpreterOptions()
-	if err != nil {
-		t.Errorf("cannot initialize interpreter options")
-	}
-	o.SetNumThread(4)
-
-	i, err := NewInterpreter(m, o)
-	if i == nil && err != nil {
-		t.Errorf("cannot create interpreter")
-	}
-
-	s := i.AllocateTensors()
-	if s != StatusOk {
-		t.Errorf("allocate Tensors failed")
+	tests := []struct {
+		name  string
+		input string
+		want  response
+	}{
+		{
+			name:  "Testing tensor data with a general model",
+			input: "testing/iris_lite.tflite",
+			want: response{
+				d: 8,
+			},
+		},
 	}
 
-	input, err := i.GetInputTensor(0)
-	if input == nil && err != nil {
-		t.Errorf("cannot Get Input Tensor")
-	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			m, _ := NewModelFromFile(tc.input)
 
-	ts := []float32{7.9, 3.8, 6.4, 2.0}
+			o, _ := NewInterpreterOptions()
+			o.SetNumThread(1)
 
-	err = input.SetFloat32(ts)
-	if err != nil {
-		t.Errorf("cannot Set Tensor: %s", err)
-	}
+			i, _ := NewInterpreter(m, o)
+			_ = i.AllocateTensors()
 
-	want := 8
-	if unsafe.Sizeof(input.Data()) != uintptr(want) {
-		t.Errorf("got %v but wants %v", unsafe.Sizeof(input.Data()), uintptr(want))
+			input, err := i.GetInputTensor(0)
+			if input == nil && err != nil {
+				t.Errorf("cannot get input Tensor")
+			}
+
+			ts := []float32{7.9, 3.8, 6.4, 2.0}
+
+			err = input.SetFloat32(ts)
+			if err != nil {
+				t.Errorf("cannot set Tensor: %s", err)
+			}
+
+			got := unsafe.Sizeof(input.Data())
+			if got != tc.want.d {
+				t.Errorf("expected: %v, got: %v", tc.want.d, got)
+			}
+		})
 	}
 }
 
