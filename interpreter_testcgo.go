@@ -19,7 +19,7 @@ func testNewInterpreter(t *testing.T) {
 	}{
 		{
 			name:  "Quant model",
-			input: "test/mobilenet_v2_1.0_224_quant.tflite",
+			input: "testing/mobilenet_v2_1.0_224_quant.tflite",
 			want: response{
 				i: 8,
 				e: nil,
@@ -72,7 +72,7 @@ func testInterpreterDelete(t *testing.T) {
 	}{
 		{
 			name:  "quant model",
-			input: "test/mobilenet_v2_1.0_224_quant.tflite",
+			input: "testing/mobilenet_v2_1.0_224_quant.tflite",
 			want:  nil,
 		},
 		{
@@ -106,7 +106,7 @@ func testGetInputTensor(t *testing.T) {
 	}{
 		{
 			name:  "General model",
-			input: "test/iris_lite.tflite",
+			input: "testing/iris_lite.tflite",
 			want:  nil,
 		},
 	}
@@ -114,7 +114,7 @@ func testGetInputTensor(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 
-			m, _ := NewModelFromFile("test/mobilenet_v2_1.0_224_quant.tflite")
+			m, _ := NewModelFromFile("testing/mobilenet_v2_1.0_224_quant.tflite")
 
 			o, _ := NewInterpreterOptions()
 			o.SetNumThread(1)
@@ -141,7 +141,7 @@ func testGetOutputTensor(t *testing.T) {
 	}{
 		{
 			name:  "General model",
-			input: "test/iris_lite.tflite",
+			input: "testing/iris_lite.tflite",
 			want: response{
 				tb: 12,
 				e:  nil,

@@ -19,7 +19,7 @@ func testNewModelFromFile(t *testing.T) {
 	}{
 		{
 			name:  "Quant model",
-			input: "test/mobilenet_v2_1.0_224_quant.tflite",
+			input: "testing/mobilenet_v2_1.0_224_quant.tflite",
 			want: response{
 				i: 8,
 				e: nil,
@@ -65,7 +65,7 @@ func testDelete(t *testing.T) {
 	}
 
 	tests := []test{
-		{input: "test/mobilenet_v2_1.0_224_quant.tflite", want: nil},
+		{input: "testing/mobilenet_v2_1.0_224_quant.tflite", want: nil},
 		{input: "", want: ErrDeleteModel},
 	}
 

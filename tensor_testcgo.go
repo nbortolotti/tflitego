@@ -13,48 +13,55 @@ import (
 )
 
 func testNumDims(t *testing.T) {
-	m, err := NewModelFromFile("test/iris_lite.tflite")
-	if m == nil && err != nil {
-		t.Errorf("Model not success")
+	type response struct {
+		nd int
 	}
 
-	o, err := NewInterpreterOptions()
-	if err != nil {
-		t.Errorf("cannot initialize interpreter options")
-	}
-	o.SetNumThread(4)
-
-	i, err := NewInterpreter(m, o)
-	if i == nil && err != nil {
-		t.Errorf("cannot create interpreter")
-	}
-
-	s := i.AllocateTensors()
-	if s != StatusOk {
-		t.Errorf("allocate Tensors failed")
+	tests := []struct {
+		name  string
+		input string
+		want  response
+	}{
+		{
+			name:  "General model",
+			input: "testing/iris_lite.tflite",
+			want: response{
+				nd: 2,
+			},
+		},
 	}
 
-	input, err := i.GetInputTensor(0)
-	if input == nil && err != nil {
-		t.Errorf("cannot Get Input Tensor")
-	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
 
-	ts := []float32{7.9, 3.8, 6.4, 2.0}
+			m, _ := NewModelFromFile(tc.input)
 
-	err = input.SetFloat32(ts)
-	if err != nil {
-		t.Errorf("cannot Set Tensor: %s", err)
-	}
+			o, _ := NewInterpreterOptions()
+			o.SetNumThread(1)
 
-	want := 2
-	got := input.NumDims()
-	if got != want {
-		t.Errorf("Got %c but wants %c", got, want)
+			i, _ := NewInterpreter(m, o)
+			_ = i.AllocateTensors()
+
+			input, err := i.GetInputTensor(0)
+			if input == nil && err != nil {
+				t.Errorf("cannot get input Tensor")
+			}
+
+			ts := []float32{7.9, 3.8, 6.4, 2.0}
+
+			_ = input.SetFloat32(ts)
+
+			got := input.NumDims()
+			if got != tc.want.nd {
+				t.Fatalf("expected: %v, got: %v", tc.want, got)
+			}
+
+		})
 	}
 }
 
 func testByteSize(t *testing.T) {
-	m, err := NewModelFromFile("test/iris_lite.tflite")
+	m, err := NewModelFromFile("testing/iris_lite.tflite")
 	if m == nil && err != nil {
 		t.Errorf("Model not success")
 	}
@@ -95,7 +102,7 @@ func testByteSize(t *testing.T) {
 }
 
 func testShape(t *testing.T) {
-	m, err := NewModelFromFile("test/iris_lite.tflite")
+	m, err := NewModelFromFile("testing/iris_lite.tflite")
 	if m == nil && err != nil {
 		t.Errorf("Model not success")
 	}
@@ -136,7 +143,7 @@ func testShape(t *testing.T) {
 }
 
 func testName(t *testing.T) {
-	m, err := NewModelFromFile("test/iris_lite.tflite")
+	m, err := NewModelFromFile("testing/iris_lite.tflite")
 	if m == nil && err != nil {
 		t.Errorf("Model not success")
 	}
@@ -177,7 +184,7 @@ func testName(t *testing.T) {
 }
 
 func testData(t *testing.T) {
-	m, err := NewModelFromFile("test/iris_lite.tflite")
+	m, err := NewModelFromFile("testing/iris_lite.tflite")
 	if m == nil && err != nil {
 		t.Errorf("Model not success")
 	}
@@ -217,7 +224,7 @@ func testData(t *testing.T) {
 }
 
 func testSetFloat32(t *testing.T) {
-	m, err := NewModelFromFile("test/iris_lite.tflite")
+	m, err := NewModelFromFile("testing/iris_lite.tflite")
 	if m == nil && err != nil {
 		t.Errorf("Model not success")
 	}
@@ -252,7 +259,7 @@ func testSetFloat32(t *testing.T) {
 }
 
 func testOperateFloat32(t *testing.T) {
-	m, err := NewModelFromFile("test/iris_lite.tflite")
+	m, err := NewModelFromFile("testing/iris_lite.tflite")
 	if m == nil && err != nil {
 		t.Errorf("Model not success")
 	}
@@ -293,7 +300,7 @@ func testOperateFloat32(t *testing.T) {
 }
 
 func testFromBuffer(t *testing.T) {
-	m, err := NewModelFromFile("test/mobilenet_v2_1.0_224_quant.tflite")
+	m, err := NewModelFromFile("testing/mobilenet_v2_1.0_224_quant.tflite")
 	if m == nil && err != nil {
 		t.Errorf("model not success")
 	}
@@ -319,7 +326,7 @@ func testFromBuffer(t *testing.T) {
 		t.Errorf("cannot Get Input Tensor")
 	}
 
-	ibuffer, err := imageToBuffer("test/cat.png", input)
+	ibuffer, err := imageToBuffer("testing/cat.png", input)
 	if err != nil {
 		t.Errorf("cannot transform image to buffer")
 	}
@@ -332,7 +339,7 @@ func testFromBuffer(t *testing.T) {
 }
 
 func testToBuffer(t *testing.T) {
-	m, err := NewModelFromFile("test/mobilenet_v2_1.0_224_quant.tflite")
+	m, err := NewModelFromFile("testing/mobilenet_v2_1.0_224_quant.tflite")
 	if m == nil && err != nil {
 		t.Errorf("model not success")
 	}
@@ -358,7 +365,7 @@ func testToBuffer(t *testing.T) {
 		t.Errorf("cannot Get Input Tensor")
 	}
 
-	ibuffer, err := imageToBuffer("test/cat.png", input)
+	ibuffer, err := imageToBuffer("testing/cat.png", input)
 	if err != nil {
 		t.Errorf("cannot transform image to buffer")
 	}
