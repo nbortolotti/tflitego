@@ -80,7 +80,7 @@ if err != nil {
 ```go
 status := interpreter.AllocateTensors()
 if status != tflite.TfLiteOk {
-    log.("allocate Tensors failed")
+    log.Println("allocate Tensors failed")
 }
 ```
 
