@@ -47,3 +47,6 @@ jobs:
     
     - name: Coverage
       run: go test -v -covermode=atomic -coverprofile=coverage.tx ./... && go tool cover -func=coverage.tx
+      
+    - name: Race
+      run: go test -v -race -covermode=atomic -coverprofile=coverage.tx 
