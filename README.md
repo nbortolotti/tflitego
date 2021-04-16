@@ -89,6 +89,9 @@ if status != tflite.TfLiteOk {
 ```go
 newspecie := []float32{7.9, 3.8, 6.4, 2.0}
 input, err := interpreter.GetInputTensor(0)
+if err != nil {
+	log.Println("cannot get input tensor", err)
+}
 input.SetFloat32(newspecie)
 ```
 
@@ -104,7 +107,10 @@ if status != tflite.StatusOk {
 7. Outputs/Results
 
 ```go
-output := interpreter.GetOutputTensor(0)
+output, err := interpreter.GetOutputTensor(0)
+if err != nil {
+	log.Println("cannot get output tensor", err)
+}
 out := output.OperateFloat32()
 fmt.Println(topSpecie(out))
 ```

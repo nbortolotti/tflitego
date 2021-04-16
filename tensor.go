@@ -76,17 +76,20 @@ func (t *Tensor) Name() string {
 
 // SetFloat32 sets float32s.
 func (t *Tensor) SetFloat32(v []float32) error {
-	if t.Type() != TfLiteFloat32 {
-		return fmt.Errorf("type error")
+	if t != nil {
+		if t.Type() != TfLiteFloat32 {
+			return fmt.Errorf("type error")
+		}
+		ptr := C.TfLiteTensorData(t.tensor)
+		if ptr == nil {
+			return fmt.Errorf("bad tensor")
+		}
+		n := t.ByteSize() / 4
+		to := (*((*[1<<29 - 1]float32)(ptr)))[:n]
+		copy(to, v)
+		return nil
 	}
-	ptr := C.TfLiteTensorData(t.tensor)
-	if ptr == nil {
-		return fmt.Errorf("bad tensor")
-	}
-	n := t.ByteSize() / 4
-	to := (*((*[1<<29 - 1]float32)(ptr)))[:n]
-	copy(to, v)
-	return nil
+	return fmt.Errorf("type error")
 }
 
 // OperateFloat32 returns float32.
