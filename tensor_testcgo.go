@@ -23,7 +23,7 @@ func testNumDims(t *testing.T) {
 		want  response
 	}{
 		{
-			name:  "Testing tensor number of dimensions with a general model",
+			name:  "Tensor number of dimensions with a general model",
 			input: "testing/iris_lite.tflite",
 			want: response{
 				nd: 2,
@@ -73,7 +73,7 @@ func testByteSize(t *testing.T) {
 		want  response
 	}{
 		{
-			name:  "Testing tensor's bytes size with a general model",
+			name:  "Tensor's bytes size with a general model",
 			input: "testing/iris_lite.tflite",
 			want: response{
 				bs: 16,
@@ -123,7 +123,7 @@ func testShape(t *testing.T) {
 		want  response
 	}{
 		{
-			name:  "Testing tensor's shape with a general model",
+			name:  "Tensor's shape with a general model",
 			input: "testing/iris_lite.tflite",
 			want: response{
 				ts: []int{1, 4},
@@ -173,7 +173,7 @@ func testName(t *testing.T) {
 		want  response
 	}{
 		{
-			name:  "Testing tensor name with a general model",
+			name:  "Tensor name with a general model",
 			input: "testing/iris_lite.tflite",
 			want: response{
 				n: "dense_input",
@@ -222,7 +222,7 @@ func testData(t *testing.T) {
 		want  response
 	}{
 		{
-			name:  "Testing tensor data with a general model",
+			name:  "Tensor data with a general model",
 			input: "testing/iris_lite.tflite",
 			want: response{
 				d: 8,

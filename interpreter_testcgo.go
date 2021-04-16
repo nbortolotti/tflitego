@@ -18,7 +18,7 @@ func testNewInterpreter(t *testing.T) {
 		want  response
 	}{
 		{
-			name:  "Quant model",
+			name:  "Interpreter quant model",
 			input: "testing/mobilenet_v2_1.0_224_quant.tflite",
 			want: response{
 				i: 8,
@@ -71,12 +71,12 @@ func testInterpreterDelete(t *testing.T) {
 		want  error
 	}{
 		{
-			name:  "quant model",
+			name:  "Interpreter delete with quant model",
 			input: "testing/mobilenet_v2_1.0_224_quant.tflite",
 			want:  nil,
 		},
 		{
-			name:  "empty model",
+			name:  "Interpreter delete empty model",
 			input: "",
 			want:  ErrDeleteIntepreter,
 		},
@@ -105,7 +105,7 @@ func testGetInputTensor(t *testing.T) {
 		want  error
 	}{
 		{
-			name:  "General model",
+			name:  "Get input tensor with general model",
 			input: "testing/iris_lite.tflite",
 			want:  nil,
 		},
@@ -140,7 +140,7 @@ func testGetOutputTensor(t *testing.T) {
 		want  response
 	}{
 		{
-			name:  "General model",
+			name:  "Get output tensor with general model",
 			input: "testing/iris_lite.tflite",
 			want: response{
 				tb: 12,
@@ -148,7 +148,7 @@ func testGetOutputTensor(t *testing.T) {
 			},
 		},
 		{
-			name:  "General model",
+			name:  "Get output tensor with empty model",
 			input: "",
 			want: response{
 				tb: 0,
