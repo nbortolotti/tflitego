@@ -80,7 +80,7 @@ if err != nil {
 ```go
 status := interpreter.AllocateTensors()
 if status != tflite.TfLiteOk {
-    log.Fatal("allocate Tensors failed")
+    log.("allocate Tensors failed")
 }
 ```
 
@@ -90,7 +90,7 @@ if status != tflite.TfLiteOk {
 newspecie := []float32{7.9, 3.8, 6.4, 2.0}
 input, err := interpreter.GetInputTensor(0)
 if err != nil {
-	log.Fatal("cannot get input tensor", err)
+	log.Println("cannot get input tensor", err)
 }
 input.SetFloat32(newspecie)
 ```
@@ -100,7 +100,7 @@ input.SetFloat32(newspecie)
 ```go
 status = interpreter.Invoke()
 if status != tflite.StatusOk {
-    log.Fatal("invoke interpreter failed")
+    log.Println("invoke interpreter failed")
 }
 ```
 
@@ -109,7 +109,7 @@ if status != tflite.StatusOk {
 ```go
 output, err := interpreter.GetOutputTensor(0)
 if err != nil {
-	log.Fatal("cannot get output tensor", err)
+	log.Println("cannot get output tensor", err)
 }
 out := output.OperateFloat32()
 fmt.Println(topSpecie(out))
