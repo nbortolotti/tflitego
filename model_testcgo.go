@@ -18,7 +18,7 @@ func testNewModelFromFile(t *testing.T) {
 		want  response
 	}{
 		{
-			name:  "Quant model",
+			name:  "New model from file using quant model",
 			input: "testing/mobilenet_v2_1.0_224_quant.tflite",
 			want: response{
 				i: 8,
@@ -26,7 +26,7 @@ func testNewModelFromFile(t *testing.T) {
 			},
 		},
 		{
-			name:  "Emty model",
+			name:  "New model form file with emty model input",
 			input: "",
 			want: response{
 				i: 0,

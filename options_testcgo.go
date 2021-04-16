@@ -18,7 +18,7 @@ func testNewInterpreterOptions(t *testing.T) {
 		want  response
 	}{
 		{
-			name:  "Generic InterpreterOption",
+			name:  "New interpreter option with empty model",
 			input: "",
 			want: response{
 				i: 8,
