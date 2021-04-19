@@ -46,12 +46,12 @@ jobs:
       run: go vet -v ./...
     
     - name: Coverage
-      run: go test -v -covermode=atomic -coverprofile=coverage.tx ./... && go tool cover -func=coverage.tx
+      run: go test -v -covermode=atomic -coverprofile=coverage.out ./... && go tool cover -func=coverage.out
       
     - name: Race
-      run: go test -v -race -covermode=atomic -coverprofile=coverage.tx 
+      run: go test -v -race -covermode=atomic -coverprofile=coverage.out 
       
-    - name: Convert coverage.tx to coverage.lcov
+    - name: Convert coverage.out to coverage.lcov
       uses: jandelgado/gcov2lcov-action@v1.0.6
       
     - name: Coveralls
