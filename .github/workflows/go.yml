@@ -51,8 +51,10 @@ jobs:
     - name: Race
       run: go test -v -race -covermode=atomic -coverprofile=coverage.tx 
       
-    - name: Upload coverage to Codecov  
-      uses: codecov/codecov-action@v1
+    - name: Convert coverage.tx to coverage.lcov
+      uses: jandelgado/gcov2lcov-action@v1.0.6
+      
+    - name: Coveralls
+      uses: coverallsapp/github-action@v1.1.2
       with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./coverage.tx
+          path-to-lcov: coverage.lcovx
