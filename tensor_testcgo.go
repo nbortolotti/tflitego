@@ -261,21 +261,12 @@ func testData(t *testing.T) {
 }
 
 func testSetFloat32(t *testing.T) {
-	m, err := NewModelFromFile("testing/iris_lite.tflite")
-	if m == nil && err != nil {
-		t.Errorf("Model not success")
-	}
+	m, _ := NewModelFromFile("testing/iris_lite.tflite")
 
-	o, err := NewInterpreterOptions()
-	if err != nil {
-		t.Errorf("cannot initialize interpreter options")
-	}
+	o, _ := NewInterpreterOptions()
 	o.SetNumThread(4)
 
-	i, err := NewInterpreter(m, o)
-	if i == nil && err != nil {
-		t.Errorf("cannot create interpreter")
-	}
+	i, _ := NewInterpreter(m, o)
 
 	s := i.AllocateTensors()
 	if s != StatusOk {
@@ -296,21 +287,12 @@ func testSetFloat32(t *testing.T) {
 }
 
 func testOperateFloat32(t *testing.T) {
-	m, err := NewModelFromFile("testing/iris_lite.tflite")
-	if m == nil && err != nil {
-		t.Errorf("Model not success")
-	}
+	m, _ := NewModelFromFile("testing/iris_lite.tflite")
 
-	o, err := NewInterpreterOptions()
-	if err != nil {
-		t.Errorf("cannot initialize interpreter options")
-	}
+	o, _ := NewInterpreterOptions()
 	o.SetNumThread(4)
 
-	i, err := NewInterpreter(m, o)
-	if i == nil && err != nil {
-		t.Errorf("cannot create interpreter")
-	}
+	i, _ := NewInterpreter(m, o)
 
 	s := i.AllocateTensors()
 	if s != StatusOk {
@@ -337,36 +319,21 @@ func testOperateFloat32(t *testing.T) {
 }
 
 func testFromBuffer(t *testing.T) {
-	m, err := NewModelFromFile("testing/mobilenet_v2_1.0_224_quant.tflite")
-	if m == nil && err != nil {
-		t.Errorf("model not success")
-	}
+	m, _ := NewModelFromFile("testing/mobilenet_v2_1.0_224_quant.tflite")
 
-	o, err := NewInterpreterOptions()
-	if err != nil {
-		t.Errorf("cannot initialize interpreter options")
-	}
+	o, _ := NewInterpreterOptions()
 	o.SetNumThread(1)
 
-	i, err := NewInterpreter(m, o)
-	if i == nil && err != nil {
-		t.Errorf("cannot create interpreter")
-	}
+	i, _ := NewInterpreter(m, o)
 
 	s := i.AllocateTensors()
 	if s != StatusOk {
 		t.Errorf("allocate Tensors failed")
 	}
 
-	input, err := i.GetInputTensor(0)
-	if input == nil && err != nil {
-		t.Errorf("cannot Get Input Tensor")
-	}
+	input, _ := i.GetInputTensor(0)
 
-	ibuffer, err := imageToBuffer("testing/cat.png", input)
-	if err != nil {
-		t.Errorf("cannot transform image to buffer")
-	}
+	ibuffer, _ := imageToBuffer("testing/cat.png", input)
 
 	want := StatusOk
 	got := input.FromBuffer(ibuffer)
@@ -376,31 +343,19 @@ func testFromBuffer(t *testing.T) {
 }
 
 func testToBuffer(t *testing.T) {
-	m, err := NewModelFromFile("testing/mobilenet_v2_1.0_224_quant.tflite")
-	if m == nil && err != nil {
-		t.Errorf("model not success")
-	}
+	m, _ := NewModelFromFile("testing/mobilenet_v2_1.0_224_quant.tflite")
 
-	o, err := NewInterpreterOptions()
-	if err != nil {
-		t.Errorf("cannot initialize interpreter options")
-	}
+	o, _ := NewInterpreterOptions()
 	o.SetNumThread(1)
 
-	i, err := NewInterpreter(m, o)
-	if i == nil && err != nil {
-		t.Errorf("cannot create interpreter")
-	}
+	i, _ := NewInterpreter(m, o)
 
 	sa := i.AllocateTensors()
 	if sa != StatusOk {
 		t.Errorf("allocate Tensors failed")
 	}
 
-	input, err := i.GetInputTensor(0)
-	if input == nil && err != nil {
-		t.Errorf("cannot Get Input Tensor")
-	}
+	input, _ := i.GetInputTensor(0)
 
 	ibuffer, err := imageToBuffer("testing/cat.png", input)
 	if err != nil {
@@ -417,10 +372,7 @@ func testToBuffer(t *testing.T) {
 		t.Errorf("invoke failed")
 	}
 
-	output, err := i.GetOutputTensor(0)
-	if err != nil {
-		t.Errorf("cannot get output Tensor")
-	}
+	output, _ := i.GetOutputTensor(0)
 
 	outputSize := output.Dim(output.NumDims() - 1)
 	b := make([]byte, outputSize)
