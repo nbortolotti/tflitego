@@ -20,10 +20,6 @@ func TestName(t *testing.T) {
 	testName(t)
 }
 
-func TestData(t *testing.T){
-	testData(t)
-}
-
 func TestSetFloat32(t *testing.T) {
 	testSetFloat32(t)
 }
@@ -38,4 +34,8 @@ func TestFromBuffer(t *testing.T) {
 
 func TestToBuffer(t *testing.T) {
 	testToBuffer(t)
+}
+
+func TestDecodeImage(t *testing.T){
+	testDecodeImage(t)
 }

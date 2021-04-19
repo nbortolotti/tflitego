@@ -25,4 +25,8 @@ var (
 	ErrInputTensor = errors.New("unable to retrieve input Tensor")
 	//ErrOutputTensor is returned when TensorFlow Lite fails to get output tensor.
 	ErrOutputTensor = errors.New("unable to retrieve output Tensor")
+	//ErrType is returned when and image operations fails a get an issue with the image type.
+	ErrType = errors.New("unable to set image type")
+	//ErrDecode is returned when and decode image operations fails.
+	ErrDecode = errors.New("unable to decode image")
 )

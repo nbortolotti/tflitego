@@ -59,11 +59,6 @@ func (t *Tensor) Shape() []int {
 	return shape
 }
 
-// Data return pointer of buffer.
-func (t *Tensor) Data() unsafe.Pointer {
-	return C.TfLiteTensorData(t.tensor)
-}
-
 // ByteSize return byte size of the tensor.
 func (t *Tensor) ByteSize() uint {
 	return uint(C.TfLiteTensorByteSize(t.tensor))
@@ -77,13 +72,11 @@ func (t *Tensor) Name() string {
 // SetFloat32 sets float32s.
 func (t *Tensor) SetFloat32(v []float32) error {
 	if t != nil {
-		if t.Type() != TfLiteFloat32 {
+		ptr := C.TfLiteTensorData(t.tensor)
+		if t.Type() != TfLiteFloat32 || ptr == nil {
 			return fmt.Errorf("type error")
 		}
-		ptr := C.TfLiteTensorData(t.tensor)
-		if ptr == nil {
-			return fmt.Errorf("bad tensor")
-		}
+
 		n := t.ByteSize() / 4
 		to := (*((*[1<<29 - 1]float32)(ptr)))[:n]
 		copy(to, v)
@@ -94,13 +87,11 @@ func (t *Tensor) SetFloat32(v []float32) error {
 
 // OperateFloat32 returns float32.
 func (t *Tensor) OperateFloat32() []float32 {
-	if t.Type() != TfLiteFloat32 {
-		return nil
-	}
 	ptr := C.TfLiteTensorData(t.tensor)
-	if ptr == nil {
-		return nil
-	}
+	// if t.Type() != TfLiteFloat32 || ptr == nil {
+	// 	return nil
+	// }
+
 	n := t.ByteSize() / 4
 	return (*((*[1<<29 - 1]float32)(ptr)))[:n]
 }
