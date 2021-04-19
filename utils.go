@@ -9,10 +9,7 @@ package tflite
 import "C"
 
 // Version returns the TensorFlow Lite version
-func Version() (string, error) {
+func Version() string {
 	x := C.TfLiteVersion()
-	if x == nil {
-		return "", ErrGetVersion
-	}
-	return C.GoString(x), nil
+	return C.GoString(x)
 }
