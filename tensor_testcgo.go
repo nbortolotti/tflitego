@@ -7,7 +7,6 @@ import (
 	_ "image/png"
 	"os"
 	"testing"
-	"unsafe"
 
 	"github.com/nfnt/resize"
 )
@@ -39,7 +38,7 @@ func testNumDims(t *testing.T) {
 			o.SetNumThread(1)
 
 			i, _ := NewInterpreter(m, o)
-			_ = i.AllocateTensors()
+			i.AllocateTensors()
 
 			input, err := i.GetInputTensor(0)
 			if input == nil && err != nil {
@@ -89,7 +88,7 @@ func testByteSize(t *testing.T) {
 			o.SetNumThread(1)
 
 			i, _ := NewInterpreter(m, o)
-			_ = i.AllocateTensors()
+			i.AllocateTensors()
 
 			input, err := i.GetInputTensor(0)
 			if input == nil && err != nil {
@@ -139,7 +138,7 @@ func testShape(t *testing.T) {
 			o.SetNumThread(1)
 
 			i, _ := NewInterpreter(m, o)
-			_ = i.AllocateTensors()
+			i.AllocateTensors()
 
 			input, err := i.GetInputTensor(0)
 			if input == nil && err != nil {
@@ -189,7 +188,7 @@ func testName(t *testing.T) {
 			o.SetNumThread(1)
 
 			i, _ := NewInterpreter(m, o)
-			_ = i.AllocateTensors()
+			i.AllocateTensors()
 
 			input, err := i.GetInputTensor(0)
 			if input == nil && err != nil {
@@ -211,21 +210,170 @@ func testName(t *testing.T) {
 	}
 }
 
-func testData(t *testing.T) {
+func testSetFloat32(t *testing.T) {
 	type response struct {
-		d uintptr
+		e error
 	}
 
 	tests := []struct {
 		name  string
 		input string
+		array []float32
 		want  response
 	}{
 		{
-			name:  "Tensor data with a general model",
+			name:  "Operate Float32 with a general model",
 			input: "testing/iris_lite.tflite",
+			array: []float32{7.9, 3.8, 6.4, 2.0},
 			want: response{
-				d: 8,
+				e: nil,
+			},
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			m, _ := NewModelFromFile(tc.input)
+
+			o, _ := NewInterpreterOptions()
+			o.SetNumThread(4)
+
+			i, _ := NewInterpreter(m, o)
+
+			i.AllocateTensors()
+
+			input, err := i.GetInputTensor(0)
+			if input == nil && err != nil {
+				t.Errorf("cannot Get Input Tensor")
+			}
+
+			ti := tc.array
+
+			got := input.SetFloat32(ti)
+
+			if got != tc.want.e {
+				t.Errorf("Got %c but wants %c", got, tc.want.e)
+			}
+
+		})
+	}
+}
+
+func testOperateFloat32(t *testing.T) {
+	type response struct {
+		af int
+	}
+
+	tests := []struct {
+		name  string
+		input string
+		array []float32
+		want  response
+	}{
+		{
+			name:  "Operate Float32 with a general model",
+			input: "testing/iris_lite.tflite",
+			array: []float32{7.9, 3.8, 6.4, 2.0},
+			want: response{
+				af: 4,
+			},
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			m, _ := NewModelFromFile(tc.input)
+
+			o, _ := NewInterpreterOptions()
+			o.SetNumThread(4)
+
+			i, _ := NewInterpreter(m, o)
+
+			i.AllocateTensors()
+
+			input, err := i.GetInputTensor(0)
+			if input == nil && err != nil {
+				t.Errorf("cannot Get Input Tensor")
+			}
+
+			ti := tc.array
+
+			err = input.SetFloat32(ti)
+			if err != nil {
+				t.Errorf("cannot Set Tensor: %s", err)
+			}
+
+			got := len(input.OperateFloat32())
+			if got != tc.want.af {
+				t.Errorf("Got %c but wants %c", got, tc.want.af)
+			}
+		})
+	}
+}
+
+func testFromBuffer(t *testing.T) {
+
+	type response struct {
+		s Status
+	}
+
+	tests := []struct {
+		name      string
+		input     string
+		imagePath string
+		want      response
+	}{
+		{
+			name:      "From Buffer with a quant model",
+			input:     "testing/mobilenet_v2_1.0_224_quant.tflite",
+			imagePath: "testing/cat.png",
+			want: response{
+				s: StatusOk,
+			},
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+
+			m, _ := NewModelFromFile(tc.input)
+
+			o, _ := NewInterpreterOptions()
+			o.SetNumThread(1)
+
+			i, _ := NewInterpreter(m, o)
+
+			i.AllocateTensors()
+
+			input, _ := i.GetInputTensor(0)
+
+			ibuffer, _ := imageToBuffer(tc.imagePath, input)
+
+			got := input.FromBuffer(ibuffer)
+			if got != tc.want.s {
+				t.Errorf("Got %c but wants %c", got, tc.want.s)
+			}
+		})
+	}
+}
+
+func testToBuffer(t *testing.T) {
+	type response struct {
+		s Status
+	}
+
+	tests := []struct {
+		name      string
+		input     string
+		imagePath string
+		want      response
+	}{
+		{
+			name:      "From Buffer with a quant model",
+			input:     "testing/mobilenet_v2_1.0_224_quant.tflite",
+			imagePath: "testing/cat.png",
+			want: response{
+				s: StatusOk,
 			},
 		},
 	}
@@ -238,151 +386,76 @@ func testData(t *testing.T) {
 			o.SetNumThread(1)
 
 			i, _ := NewInterpreter(m, o)
-			_ = i.AllocateTensors()
 
-			input, err := i.GetInputTensor(0)
-			if input == nil && err != nil {
-				t.Errorf("cannot get input Tensor")
-			}
+			i.AllocateTensors()
 
-			ts := []float32{7.9, 3.8, 6.4, 2.0}
+			input, _ := i.GetInputTensor(0)
 
-			err = input.SetFloat32(ts)
+			ibuffer, err := imageToBuffer(tc.imagePath, input)
 			if err != nil {
-				t.Errorf("cannot set Tensor: %s", err)
+				t.Errorf("cannot transform image to buffer")
 			}
 
-			got := unsafe.Sizeof(input.Data())
-			if got != tc.want.d {
-				t.Errorf("expected: %v, got: %v", tc.want.d, got)
+			input.FromBuffer(ibuffer)
+			i.Invoke()
+
+			output, _ := i.GetOutputTensor(0)
+
+			outputSize := output.Dim(output.NumDims() - 1)
+			b := make([]byte, outputSize)
+
+			got := output.ToBuffer(&b[0])
+			if got != tc.want.s {
+				t.Errorf("Got %c but wants %c", got, tc.want.s)
 			}
 		})
 	}
 }
 
-func testSetFloat32(t *testing.T) {
-	m, _ := NewModelFromFile("testing/iris_lite.tflite")
-
-	o, _ := NewInterpreterOptions()
-	o.SetNumThread(4)
-
-	i, _ := NewInterpreter(m, o)
-
-	s := i.AllocateTensors()
-	if s != StatusOk {
-		t.Errorf("allocate Tensors failed")
+func testDecodeImage(t *testing.T) {
+	type response struct {
+		e error
 	}
 
-	input, err := i.GetInputTensor(0)
-	if input == nil && err != nil {
-		t.Errorf("cannot Get Input Tensor")
+	tests := []struct {
+		name      string
+		imagePath string
+		want      response
+	}{
+		{
+			name:      "Success decode image",
+			imagePath: "testing/cat.png",
+			want: response{
+				e: nil,
+			},
+		},
+		{
+			name:      "Incorrect image type ",
+			imagePath: "",
+			want: response{
+				e: ErrType,
+			},
+		},
+		{
+			name:      "Incorrect decode image",
+			imagePath: "testing/dog.jpg",
+			want: response{
+				e: ErrDecode,
+			},
+		},
 	}
 
-	ts := []float32{7.9, 3.8, 6.4, 2.0}
-
-	err = input.SetFloat32(ts)
-	if err != nil {
-		t.Errorf("cannot Set Tensor: %s", err)
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			_, err := decodeImage(tc.imagePath)
+			got := response{
+				e: err,
+			}
+			if got.e != tc.want.e {
+				t.Errorf("Got %v but wants %v", got, tc.want)
+			}
+		})
 	}
-}
-
-func testOperateFloat32(t *testing.T) {
-	m, _ := NewModelFromFile("testing/iris_lite.tflite")
-
-	o, _ := NewInterpreterOptions()
-	o.SetNumThread(4)
-
-	i, _ := NewInterpreter(m, o)
-
-	s := i.AllocateTensors()
-	if s != StatusOk {
-		t.Errorf("allocate Tensors failed")
-	}
-
-	input, err := i.GetInputTensor(0)
-	if input == nil && err != nil {
-		t.Errorf("cannot Get Input Tensor")
-	}
-
-	want := []float32{7.9, 3.8, 6.4, 2.0}
-
-	err = input.SetFloat32(want)
-	if err != nil {
-		t.Errorf("cannot Set Tensor: %s", err)
-	}
-
-	got := input.OperateFloat32()
-	if len(got) != len(want) {
-		t.Errorf("Got %c but wants %c", len(got), len(want))
-	}
-
-}
-
-func testFromBuffer(t *testing.T) {
-	m, _ := NewModelFromFile("testing/mobilenet_v2_1.0_224_quant.tflite")
-
-	o, _ := NewInterpreterOptions()
-	o.SetNumThread(1)
-
-	i, _ := NewInterpreter(m, o)
-
-	s := i.AllocateTensors()
-	if s != StatusOk {
-		t.Errorf("allocate Tensors failed")
-	}
-
-	input, _ := i.GetInputTensor(0)
-
-	ibuffer, _ := imageToBuffer("testing/cat.png", input)
-
-	want := StatusOk
-	got := input.FromBuffer(ibuffer)
-	if got != want {
-		t.Errorf("got %c but wants %c", got, want)
-	}
-}
-
-func testToBuffer(t *testing.T) {
-	m, _ := NewModelFromFile("testing/mobilenet_v2_1.0_224_quant.tflite")
-
-	o, _ := NewInterpreterOptions()
-	o.SetNumThread(1)
-
-	i, _ := NewInterpreter(m, o)
-
-	sa := i.AllocateTensors()
-	if sa != StatusOk {
-		t.Errorf("allocate Tensors failed")
-	}
-
-	input, _ := i.GetInputTensor(0)
-
-	ibuffer, err := imageToBuffer("testing/cat.png", input)
-	if err != nil {
-		t.Errorf("cannot transform image to buffer")
-	}
-
-	sfb := input.FromBuffer(ibuffer)
-	if sfb != StatusOk {
-		t.Errorf("from buffer failed")
-	}
-
-	si := i.Invoke()
-	if si != StatusOk {
-		t.Errorf("invoke failed")
-	}
-
-	output, _ := i.GetOutputTensor(0)
-
-	outputSize := output.Dim(output.NumDims() - 1)
-	b := make([]byte, outputSize)
-
-	want := StatusOk
-	got := output.ToBuffer(&b[0])
-	if got != want {
-		t.Errorf("got %c but wants %c", got, want)
-	}
-
 }
 
 func imageToBuffer(imagePath string, t *Tensor) ([]byte, error) {
@@ -420,12 +493,12 @@ func imageToBuffer(imagePath string, t *Tensor) ([]byte, error) {
 func decodeImage(imagePath string) (image.Image, error) {
 	f, err := os.Open(imagePath)
 	if err != nil {
-		return nil, fmt.Errorf("incorrect type")
+		return nil, ErrType
 	}
 
 	img, _, err := image.Decode(f)
 	if err != nil {
-		return nil, fmt.Errorf("decode issue")
+		return nil, ErrDecode
 	}
 	return img, nil
 }
