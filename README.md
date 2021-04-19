@@ -1,5 +1,5 @@
 ![Go](https://github.com/nbortolotti/gotflite/workflows/Go/badge.svg?branch=main)
-[![codecov](https://codecov.io/gh/nbortolotti/tflitego/branch/main/graph/badge.svg?token=aI7ByKwrMz)](https://codecov.io/gh/nbortolotti/tflitego)
+[![Coverage Status](https://coveralls.io/repos/github/nbortolotti/tflitego/badge.svg?branch=main)](https://coveralls.io/github/nbortolotti/tflitego?branch=main)
 [![GoDoc](https://godoc.org/github.com/nbortolotti/tflitego?status.svg)](https://godoc.org/github.com/nbortolotti/tflitego)
 [![Gitter](https://badges.gitter.im/tflitego/community.svg)](https://gitter.im/tflitego/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 ![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/tflitego?style=social)
