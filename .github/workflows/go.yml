@@ -29,8 +29,6 @@ jobs:
         sudo ldconfig
         sudo apt-get update
         sudo apt-get install gcc
-        sudo chmod ugo+rwx /usr/local/include/libedgetpu
-        sudo chmod o+w /usr/local/include/libedgetpu/edgetpu_c.h
 
     - name: gotflite
       uses: actions/checkout@v2
