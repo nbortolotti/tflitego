@@ -26,10 +26,10 @@ jobs:
       run: |
         wget https://storage.googleapis.com/clitelibrary/ctflitelib_2.4.0.tar.gz
         sudo tar -C /usr/local -xzf ctflitelib_2.4.0.tar.gz
-        sudo chmod ugo+rwx /usr/local/include/libedgetpu
         sudo ldconfig
         sudo apt-get update
         sudo apt-get install gcc
+        sudo chmod ugo+rwx /usr/local/include/libedgetpu
 
     - name: gotflite
       uses: actions/checkout@v2
