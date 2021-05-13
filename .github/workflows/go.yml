@@ -20,7 +20,7 @@ jobs:
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
       with:
-        go-version: ^1.15
+        go-version: ^1.16
         
     - name: Set up Tensorflow c Library
       run: |
@@ -29,6 +29,7 @@ jobs:
         sudo ldconfig
         sudo apt-get update
         sudo apt-get install gcc
+        sudo chmod ugo+rwx /usr/local/include/libedgetpu
 
     - name: gotflite
       uses: actions/checkout@v2
