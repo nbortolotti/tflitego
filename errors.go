@@ -19,10 +19,14 @@ var (
 	ErrCreateIntepreter = errors.New("unable to create the TF model interpreter")
 	// ErrDeleteIntepreter is returned when Tensor Flow Lite fails to delete the model interpreter.
 	ErrDeleteIntepreter = errors.New("unable to delete the TF model interpreter")
+	// ErrDeleteDelegateEdge is returned when Tensor Flow Lite fails to delete the edge delegate.
+	ErrDeleteDelegateEdge = errors.New("unable to delete the edge delegate")
 	// ErrDeleteIntepreteroptions is returned when Tensor Flow Lite fails to delete the model interpreter options.
 	ErrDeleteIntepreterOptions = errors.New("unable to delete the TF model interpreter options")
 	// ErrInterpreterSetNumThread is returned when Tensor Flow Lite fails to set number of threads.
 	ErrInterpreterSetNumThread = errors.New("unable to set number of threads")
+	//ErrInterpreterAddDelegate is returned when TensorFlow Lite fails to add delegate
+	ErrInterpreterAddDelegate = errors.New("unable to add new delegate")
 	//ErrInputTensor is returned when TensorFlow Lite fails to get input tensor
 	ErrInputTensor = errors.New("unable to retrieve input Tensor")
 	//ErrOutputTensor is returned when TensorFlow Lite fails to get output tensor.
@@ -31,4 +35,6 @@ var (
 	ErrType = errors.New("unable to set image type")
 	//ErrDecode is returned when and decode image operations fails.
 	ErrDecode = errors.New("unable to decode image")
+	//ErrDeviceList is returned when is not possible to retrieve a list of devices.
+	ErrDeviceList = errors.New("unable to retrieve list of devices")
 )

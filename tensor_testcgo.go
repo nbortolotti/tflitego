@@ -259,7 +259,7 @@ func testSetFloat32(t *testing.T) {
 	}
 }
 
-func testOperateFloat32(t *testing.T) {
+func testGetFloat32(t *testing.T) {
 	type response struct {
 		af int
 	}
@@ -303,7 +303,7 @@ func testOperateFloat32(t *testing.T) {
 				t.Errorf("cannot Set Tensor: %s", err)
 			}
 
-			got := len(input.OperateFloat32())
+			got := len(input.GetFloat32())
 			if got != tc.want.af {
 				t.Errorf("Got %c but wants %c", got, tc.want.af)
 			}
@@ -312,7 +312,6 @@ func testOperateFloat32(t *testing.T) {
 }
 
 func testFromBuffer(t *testing.T) {
-
 	type response struct {
 		s Status
 	}
@@ -352,6 +351,61 @@ func testFromBuffer(t *testing.T) {
 			got := input.FromBuffer(ibuffer)
 			if got != tc.want.s {
 				t.Errorf("Got %c but wants %c", got, tc.want.s)
+			}
+		})
+	}
+}
+
+func testQuantizationParams(t *testing.T) {
+	type response struct {
+		qp QuantizationParams
+	}
+
+	tests := []struct {
+		name      string
+		input     string
+		imagePath string
+		want      response
+	}{
+		{
+			name:      "From Buffer with a quant model",
+			input:     "testing/mobilenet_v2_1.0_224_quant.tflite",
+			imagePath: "testing/cat.png",
+			want: response{
+				qp: QuantizationParams{
+					Scale:     float64(0.09889253973960876),
+					ZeroPoint: int(58),
+				},
+			},
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			m, _ := NewModelFromFile(tc.input)
+
+			o, _ := NewInterpreterOptions()
+			o.SetNumThread(1)
+
+			i, _ := NewInterpreter(m, o)
+
+			i.AllocateTensors()
+
+			input, _ := i.GetInputTensor(0)
+
+			ibuffer, err := imageToBuffer(tc.imagePath, input)
+			if err != nil {
+				t.Errorf("cannot transform image to buffer")
+			}
+
+			input.FromBuffer(ibuffer)
+			i.Invoke()
+
+			output, _ := i.GetOutputTensor(0)
+
+			got := output.QuantizationParams()
+			if got.ZeroPoint != tc.want.qp.ZeroPoint {
+				t.Errorf("Got %v but wants %v", got, tc.want.qp.ZeroPoint)
 			}
 		})
 	}

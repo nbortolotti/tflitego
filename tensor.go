@@ -3,7 +3,7 @@ package tflite
 /*
 #include <stdio.h>
 #include <tensorflow/lite/c/c_api.h>
-#cgo LDFLAGS: -ltensorflowlite_c -ledgetpu
+#cgo LDFLAGS: -ltensorflowlite_c
 #cgo linux LDFLAGS: -lm -ldl -lrt
 */
 import "C"
@@ -91,12 +91,9 @@ func (t *Tensor) SetFloat32(v []float32) error {
 	return fmt.Errorf("type error")
 }
 
-// OperateFloat32 returns float32.
-func (t *Tensor) OperateFloat32() []float32 {
+// GetFloat32 returns float32.
+func (t *Tensor) GetFloat32() []float32 {
 	ptr := C.TfLiteTensorData(t.tensor)
-	// if t.Type() != TfLiteFloat32 || ptr == nil {
-	// 	return nil
-	// }
 
 	n := t.ByteSize() / 4
 	return (*((*[1<<29 - 1]float32)(ptr)))[:n]

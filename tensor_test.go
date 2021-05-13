@@ -24,8 +24,8 @@ func TestSetFloat32(t *testing.T) {
 	testSetFloat32(t)
 }
 
-func TestOperateFloat32(t *testing.T) {
-	testOperateFloat32(t)
+func TestGetFloat32(t *testing.T) {
+	testGetFloat32(t)
 }
 
 func TestFromBuffer(t *testing.T) {
@@ -36,6 +36,9 @@ func TestToBuffer(t *testing.T) {
 	testToBuffer(t)
 }
 
+func TestQuantizationParams(t *testing.T){
+	testQuantizationParams(t)
+}
 func TestDecodeImage(t *testing.T){
 	testDecodeImage(t)
 }
