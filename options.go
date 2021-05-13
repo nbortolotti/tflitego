@@ -39,3 +39,8 @@ func (o *InterpreterOptions) SetNumThread(numThreads int) error {
 	}
 	return ErrInterpreterSetNumThread
 }
+
+// AddDelegate add the option of a delegate for the TensorFlow Lite interpreter
+func (o *InterpreterOptions) AddDelegate(d *Delegate) {
+	C.TfLiteInterpreterOptionsAddDelegate(o.options, (*C.TfLiteDelegate)(d.UsPtr()))
+}
