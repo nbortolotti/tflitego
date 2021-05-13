@@ -7,6 +7,8 @@ import (
 var (
 	// ErrGetVersion is returned when Tensor Flow Lite fails to return the version.
 	ErrGetVersion = errors.New("unable to retrieve TensorFlow Lite version")
+	// ErrGetEdgeVersion is returned when Tensor Flow Lite Edge support fails to return the version.
+	ErrGetEdgeVersion = errors.New("unable to retrieve TensorFlow Lite Edge version")
 	// ErrCreateModel is returned when Tensor Flow Lite fails to create the model.
 	ErrCreateModel = errors.New("unable to create the TF model")
 	// ErrCreateInterpreterOptions is returned when creating the interpreter options fails.

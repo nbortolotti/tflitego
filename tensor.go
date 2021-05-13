@@ -3,7 +3,8 @@ package tflite
 /*
 #include <stdio.h>
 #include <tensorflow/lite/c/c_api.h>
-#cgo LDFLAGS: -ltensorflowlite_c
+#include <libedgetpu/edgetpu_c.h>
+#cgo LDFLAGS: -ltensorflowlite_c -ledgetpu
 #cgo linux LDFLAGS: -lm -ldl -lrt
 */
 import "C"
@@ -33,6 +34,12 @@ const (
 // Tensor represents TensorFlow Lite Tensor.
 type Tensor struct {
 	tensor *C.TfLiteTensor
+}
+
+// QuantizationParams
+type QuantizationParams struct {
+	Scale     float64
+	ZeroPoint int
 }
 
 // Type return TensorType.
@@ -104,4 +111,13 @@ func (t *Tensor) FromBuffer(b interface{}) Status {
 // ToBuffer copy Tensor to Buffer
 func (t *Tensor) ToBuffer(b interface{}) Status {
 	return Status(C.TfLiteTensorCopyToBuffer(t.tensor, unsafe.Pointer(reflect.ValueOf(b).Pointer()), C.size_t(t.ByteSize())))
+}
+
+//QuantizationParams return quantization parameters of a Tensor.
+func (t *Tensor) QuantizationParams() QuantizationParams {
+	qp := C.TfLiteTensorQuantizationParams(t.tensor)
+	return QuantizationParams{
+		Scale:     float64(qp.scale),
+		ZeroPoint: int(qp.zero_point),
+	}
 }
