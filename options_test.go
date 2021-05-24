@@ -15,3 +15,7 @@ func TestInterpreterOptionsDelete(t *testing.T) {
 func TestSetNumThread(t *testing.T){
 	testSetNumThread(t)
 }
+
+func TestAddDelegate(t *testing.T){
+	testAddDelegate(t)
+}

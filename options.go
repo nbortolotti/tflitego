@@ -7,6 +7,9 @@ package tflite
 #cgo linux LDFLAGS: -lm -ldl -lrt
 */
 import "C"
+import (
+	"unsafe"
+)
 
 // InterpreterOptions represents a TensorFlow Lite InterpreterOptions.
 type InterpreterOptions struct {
@@ -38,4 +41,13 @@ func (o *InterpreterOptions) SetNumThread(numThreads int) error {
 		return nil
 	}
 	return ErrInterpreterSetNumThread
+}
+
+// AddDelegate add the option of a delegate for the TensorFlow Lite interpreter
+func (o *InterpreterOptions) AddDelegate(d *Delegate) error {
+	if o != nil {
+		C.TfLiteInterpreterOptionsAddDelegate(o.options, (*C.TfLiteDelegate)(unsafe.Pointer(d)))
+		return nil
+	}
+	return ErrInterpreterAddDelegate
 }

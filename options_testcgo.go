@@ -100,6 +100,66 @@ func testSetNumThread(t *testing.T) {
 	}
 }
 
+func testAddDelegate(t *testing.T) {
+	type response struct {
+		e error
+	}
+
+	tests := []struct {
+		name      string
+		input     string
+		imagePath string
+		want      response
+	}{
+		{
+			name:      "Add delegate without interpreter",
+			input:     "testing/mobilenet_v2_1.0_224_quant.tflite",
+			imagePath: "testing/cat.png",
+			want: response{
+				e: ErrInterpreterAddDelegate,
+			},
+		},
+		{
+			name:      "Success Add delegate",
+			input:     "testing/mobilenet_v2_1.0_224_quant.tflite",
+			imagePath: "testing/cat.png",
+			want: response{
+				e: nil,
+			},
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+
+			m, _ := NewModelFromFile(tc.input)
+
+			d := NewEdge(Device{
+				Type: TypeApexUSB,
+				Path: "",
+			})
+
+			var o *InterpreterOptions
+			var got error
+
+			switch tc.name {
+			case "Add delegate without interpreter":
+				got = o.AddDelegate(d)
+			default:
+				o, _ = NewInterpreterOptions()
+				o.SetNumThread(1)
+				i, _ := NewInterpreter(m, o)
+				_ = i.AllocateTensors()
+				got = o.AddDelegate(d)
+			}
+
+			if got != tc.want.e {
+				t.Errorf("Got %v but wants %v", got, tc.want.e)
+			}
+		})
+	}
+}
+
 func testInterpreterOptionsDelete(t *testing.T) {
 	type response struct {
 		e error

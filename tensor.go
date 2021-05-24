@@ -35,6 +35,12 @@ type Tensor struct {
 	tensor *C.TfLiteTensor
 }
 
+// QuantizationParams
+type QuantizationParams struct {
+	Scale     float64
+	ZeroPoint int
+}
+
 // Type return TensorType.
 func (t *Tensor) Type() TensorType {
 	return TensorType(C.TfLiteTensorType(t.tensor))
@@ -85,12 +91,9 @@ func (t *Tensor) SetFloat32(v []float32) error {
 	return fmt.Errorf("type error")
 }
 
-// OperateFloat32 returns float32.
-func (t *Tensor) OperateFloat32() []float32 {
+// GetFloat32 returns float32.
+func (t *Tensor) GetFloat32() []float32 {
 	ptr := C.TfLiteTensorData(t.tensor)
-	// if t.Type() != TfLiteFloat32 || ptr == nil {
-	// 	return nil
-	// }
 
 	n := t.ByteSize() / 4
 	return (*((*[1<<29 - 1]float32)(ptr)))[:n]
@@ -104,4 +107,13 @@ func (t *Tensor) FromBuffer(b interface{}) Status {
 // ToBuffer copy Tensor to Buffer
 func (t *Tensor) ToBuffer(b interface{}) Status {
 	return Status(C.TfLiteTensorCopyToBuffer(t.tensor, unsafe.Pointer(reflect.ValueOf(b).Pointer()), C.size_t(t.ByteSize())))
+}
+
+//QuantizationParams return quantization parameters of a Tensor.
+func (t *Tensor) QuantizationParams() QuantizationParams {
+	qp := C.TfLiteTensorQuantizationParams(t.tensor)
+	return QuantizationParams{
+		Scale:     float64(qp.scale),
+		ZeroPoint: int(qp.zero_point),
+	}
 }
